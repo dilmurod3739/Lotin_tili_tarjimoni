@@ -1,0 +1,28 @@
+========================================================================
+SHIFOKORLAR UCHUN LOTIN TILI VA RETSEPTLAR TARJIMONI DASTURI
+========================================================================
+
+1. LOYIHA HAQIDA:
+Ushbu veb-dastur shifokorlar (doktorlar) yozgan lotin tilidagi retseptlar, 
+qisqartmalar (abbreviaturalar), dori shakllari va klinik tashxislarni 
+oddiy bemorlar va talabalar uchun tushunarli o'zbek tiliga tarjima qilib, 
+izohlab berish uchun maxsus yaratilgan.
+
+2. ASOSIY IMKONIYATLAR:
+- Retsept Dekoderi (Rp., D.t.d. N., S., i/m, in tab., t.i.d., a.c., p.c. va h.k.)
+- Tashxis (Diagnoz) Tushuntiruvchisi (Prefiks + Ildiz + Suffiks morfologiyasi: -itis, -oma, -osis, -ectomia...)
+- Katta Tibbiy Lotin Tili Lug'ati (Tezkor qidiruv, toifalar, misollar)
+- Retsept Tuzilishi va Blankasi (Shifokor retsepti qismlari bo'yicha qo'llanma)
+- Lotin Alifbosi va Talaffuz Qoidalari (Audio tinglash imkoniyati bilan)
+- Bilimni Sinash Uchun Interaktiv Viktorina / Test (Quiz)
+- Tungi (Dark) va Kunduzgi (Light) zamonaviy tibbiy rejim
+
+3. FAYLLAR TUZILISHI:
+- index.html   -> Asosiy boshlang'ich sahifa (To'g'ridan-to'g'ri brauzerda ochiladi)
+- style.css    -> Zamonaviy tibbiy dizayn, moslashuvchan (responsive) CSS
+- data.js      -> Tibbiy lotin tili ma'lumotlar bazasi (atamalar, retseptlar, testlar)
+- app.js       -> Tahlil qilish, talaffuz (TTS), qidiruv va test logikasi
+
+4. ISHGA TUSHIRISH:
+Hech qanday qo'shimcha o'rnatishlar shart emas! 
+Shunchaki "index.html" fayli ustiga sichqonchani ikki marta bosing va brauzerda oching.

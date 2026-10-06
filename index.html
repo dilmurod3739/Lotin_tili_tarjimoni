@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedLatin — Shifokorlar Lotin Tili va Retseptlar Tarjimoni</title>
+    <meta name="description" content="Doktorlar yozgan lotin tilidagi retseptlar, qisqartmalar, tashxislar va tibbiy atamalarni oddiy o'zbek tilida tushuntirib beruvchi interaktiv veb dastur.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Site Header -->
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="#" class="logo-brand">
+                <div class="logo-icon-wrap">
+                    <i class="fas fa-notes-medical"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>MedLatin</h1>
+                    <span>Shifokorlar Lotin Tili Portali</span>
+                </div>
+            </a>
+
+            <div class="header-actions">
+                <button class="theme-toggle-btn" id="theme-toggle-btn" title="Mavzuni o'zgartirish (Tun/Kun)" aria-label="Mavzuni o'zgartirish">
+                    <i class="fas fa-sun" id="theme-icon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+        
+        <!-- Hero Banner -->
+        <section class="hero-banner">
+            <div class="hero-content">
+                <span class="hero-badge"><i class="fas fa-sparkles"></i> Aqlli Tibbiy Yordamchi</span>
+                <h2 class="hero-title">Shifokorlar yozuvini <span>oson va tushunarli</span> o'qing!</h2>
+                <p class="hero-lead">
+                    Doktorlar yozgan lotincha retseptlar, qisqartmalar (Rp., D.t.d., S., i/m, t.i.d.) va tashxislarni oddiy, xalqona o'zbek tilida tahlil qiling va ma'nosini biling.
+                </p>
+            </div>
+        </section>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tab-bar" aria-label="Bo'limlar">
+            <button class="nav-tab-btn active" data-target="section-decoder">
+                <i class="fas fa-file-prescription"></i> Retsept Dekoderi
+            </button>
+            <button class="nav-tab-btn" data-target="section-diagnosis">
+                <i class="fas fa-stethoscope"></i> Tashxis Dekonstruktori
+            </button>
+            <button class="nav-tab-btn" data-target="section-dictionary">
+                <i class="fas fa-book-medical"></i> Tibbiy Lug'at
+            </button>
+            <button class="nav-tab-btn" data-target="section-guide">
+                <i class="fas fa-clipboard-list"></i> Retsept Qoidalari
+            </button>
+            <button class="nav-tab-btn" data-target="section-phonetics">
+                <i class="fas fa-volume-up"></i> O'qilish Qoidalari
+            </button>
+            <button class="nav-tab-btn" data-target="section-quiz">
+                <i class="fas fa-brain"></i> Bilimni Sinash (Test)
+            </button>
+        </nav>
+
+        <!-- 1. RETSEPT DEKODERI SECTION -->
+        <section id="section-decoder" class="app-section active">
+            <div class="section-head">
+                <h2><i class="fas fa-file-prescription"></i> Retsept Tahlilchisi va Tarjimoni</h2>
+                <p>Retsept matnini kiriting yoki quyidagi tayyor namunalardan birini tanlab tahlil qiling.</p>
+            </div>
+
+            <div class="decoder-grid">
+                <!-- Left Input Card -->
+                <div class="editor-card">
+                    <div class="card-title-row">
+                        <h3><i class="fas fa-edit"></i> Retsept Matni</h3>
+                        <button class="btn btn-sm btn-outline" id="speak-rx-btn" title="Ovozli eshitish">
+                            <i class="fas fa-volume-up"></i> O'qish
+                        </button>
+                    </div>
+
+                    <div class="samples-label">Tezkor namunalar:</div>
+                    <div class="rx-samples-scroll">
+                        <button class="rx-sample-pill" data-index="0"><i class="fas fa-syringe"></i> Analgin ukoli</button>
+                        <button class="rx-sample-pill" data-index="1"><i class="fas fa-capsules"></i> Amoksitsillin</button>
+                        <button class="rx-sample-pill" data-index="2"><i class="fas fa-heartbeat"></i> Enalapril</button>
+                        <button class="rx-sample-pill" data-index="3"><i class="fas fa-eye"></i> Levomitsetin</button>
+                        <button class="rx-sample-pill" data-index="4"><i class="fas fa-pump-medical"></i> Oksolin mazi</button>
+                        <button class="rx-sample-pill" data-index="5"><i class="fas fa-prescription-bottle"></i> Paratsetamol</button>
+                    </div>
+
+                    <div class="textarea-wrap">
+                        <textarea id="prescription-input" class="rx-textarea" placeholder="Bu yerga doktor yozgan retseptni kiriting... Masalan:&#10;Rp.: Sol. Analgini 50% - 2 ml&#10;D.t.d. N. 10 in ampull.&#10;S. Mushak ichiga 1 ampuladan og'riq bo'lganda." spellcheck="false"></textarea>
+                    </div>
+
+                    <div class="editor-btn-row">
+                        <button id="analyze-rx-btn" class="btn btn-primary">
+                            <i class="fas fa-magic"></i> Retseptni Tahlil Qilish
+                        </button>
+                        <button id="clear-rx-btn" class="btn btn-outline">
+                            <i class="fas fa-trash-alt"></i> Tozalash
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Result Output -->
+                <div id="rx-result-container">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. TASHXIS DEKONSTRUKTORI SECTION -->
+        <section id="section-diagnosis" class="app-section">
+            <div class="section-head">
+                <h2><i class="fas fa-stethoscope"></i> Tashxis (Diagnoz) Tushuntiruvchisi</h2>
+                <p>Kasalxonada yoki ambulator kartada yozilgan tashxisni kiriting — tizim uni qismlarga ajratib sodda qilib tushuntiradi.</p>
+            </div>
+
+            <div class="diag-input-wrapper">
+                <div class="diag-search-bar-wrap">
+                    <div class="diag-search-bar">
+                        <i class="fas fa-search diag-search-icon-left"></i>
+                        <input type="text" id="diag-input" class="diag-input" placeholder="Doktor yozgan istalgan tashxisni yozing (masalan: Surunkali gastrit, Pnevmoniya, Gipertoniya, Infarkt, Qandli diabet, Insult, Pielonefrit, Osteoxondroz, Appenditsit, Gaymorit)..." value="Surunkali gastrit" autocomplete="off">
+                        <button id="analyze-diag-btn" class="btn btn-primary">
+                            <i class="fas fa-microscope"></i> Tahlil Qilish
+                        </button>
+                    </div>
+                    <div id="diag-autocomplete-list" class="diag-autocomplete-dropdown" style="display: none;"></div>
+                </div>
+
+                <!-- Organ System Filter Tabs -->
+                <div class="diag-categories-row">
+                    <span class="samples-label"><i class="fas fa-layer-group"></i> A'zolar bo'yicha:</span>
+                    <div class="diag-category-pills">
+                        <button class="diag-cat-pill active" data-cat="all">Barcha tashxislar</button>
+                        <button class="diag-cat-pill" data-cat="Hazm a'zolari">🥗 Oshqozon-ichak</button>
+                        <button class="diag-cat-pill" data-cat="Yurak-qon tomir">🫀 Yurak va Tomir</button>
+                        <button class="diag-cat-pill" data-cat="Nafas a'zolari">🫁 O'pka va Nafas</button>
+                        <button class="diag-cat-pill" data-cat="Buyrak va siydik">🧪 Buyrak va Peshob</button>
+                        <button class="diag-cat-pill" data-cat="Asab tizimi">🧠 Asab va Miya</button>
+                        <button class="diag-cat-pill" data-cat="Tayanch-harakat">🦴 Suyak va Bo'g'im</button>
+                        <button class="diag-cat-pill" data-cat="Endokrin tizim">🦋 Qand va Bezlar</button>
+                        <button class="diag-cat-pill" data-cat="LOR a'zolari">👂 LOR (Tomoq, Burun)</button>
+                        <button class="diag-cat-pill" data-cat="Yuqumli va virusli kasalliklar">🦠 OITS, Sil va Yuqumli</button>
+                        <button class="diag-cat-pill" data-cat="Boshqa">🩸 Qon, Ko'z, Teri</button>
+                    </div>
+                </div>
+
+                <!-- Quick Samples -->
+                <div class="diag-samples-row">
+                    <span class="samples-label"><i class="fas fa-bolt"></i> Tezkor namunalar:</span>
+                    <button class="diag-sample-chip" data-word="OITS">🦠 OITS (SPID)</button>
+                    <button class="diag-sample-chip" data-word="Sil">Sil (Tuberkulyoz)</button>
+                    <button class="diag-sample-chip" data-word="Surunkali gastrit">Surunkali gastrit</button>
+                    <button class="diag-sample-chip" data-word="Pnevmoniya">Zotiljam (Pnevmoniya)</button>
+                    <button class="diag-sample-chip" data-word="Arterial gipertoniya">Gipertoniya (Davleniya)</button>
+                    <button class="diag-sample-chip" data-word="Miokard infarkti">Miokard infarkti</button>
+                    <button class="diag-sample-chip" data-word="Qandli diabet">Qandli diabet</button>
+                    <button class="diag-sample-chip" data-word="Insult">Insult (ONMK)</button>
+                    <button class="diag-sample-chip" data-word="Piyelonefrit">Piyelonefrit</button>
+                    <button class="diag-sample-chip" data-word="Buyrak tosh kasalligi">Buyrak toshi (MKB)</button>
+                    <button class="diag-sample-chip" data-word="Botulizm">Botulizm</button>
+                    <button class="diag-sample-chip" data-word="Gaymorit">Gaymorit</button>
+                </div>
+            </div>
+
+            <div id="diag-result-container">
+                <!-- Populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- 3. TIBBIY LUG'AT SECTION -->
+        <section id="section-dictionary" class="app-section">
+            <div class="section-head">
+                <h2><i class="fas fa-book-medical"></i> Katta Tibbiy Lotin Tili Lug'ati</h2>
+                <p>Retsept qisqartmalari, dori shakllari, anatomik atamalar va tibbiy qo'shimchalar bo'yicha to'liq qo'llanma.</p>
+            </div>
+
+            <div class="dict-controls-wrap">
+                <div class="dict-search-input-wrap">
+                    <i class="fas fa-search dict-search-icon"></i>
+                    <input type="text" id="dict-search-input" class="dict-input" placeholder="Lotincha, o'zbekcha yoki qisqartma bo'yicha qidiring (masalan: Sol., Gaster, -itis, i/m)...">
+                </div>
+
+                <div class="dict-filters-row">
+                    <div class="filters-list">
+                        <button class="filter-pill active" data-filter="all">Barchasi</button>
+                        <button class="filter-pill" data-filter="abbreviations">💊 Retsept Qisqartmalari</button>
+                        <button class="filter-pill" data-filter="forms">🧪 Dori Shakllari</button>
+                        <button class="filter-pill" data-filter="anatomy">🫀 Tana A'zolari (Anatomiya)</button>
+                        <button class="filter-pill" data-filter="suffixes">🧬 Suffiks va Prefikslar</button>
+                    </div>
+                    <div id="dict-result-count" class="result-count-badge"></div>
+                </div>
+            </div>
+
+            <div id="dict-cards-container" class="dict-grid">
+                <!-- Populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- 4. RETSEPT QOIDALARI & O'QUV QO'LLANMASI -->
+        <section id="section-guide" class="app-section">
+            <div class="section-head">
+                <h2><i class="fas fa-clipboard-list"></i> Shifokor Retsepti Tuzilishi va Qoidalari</h2>
+                <p>Retsept blankasi qanday qismlardan iborat bo'lishi va bemorlar nimaga e'tibor berishi zarurligi.</p>
+            </div>
+
+            <div class="rx-guide-grid">
+                <!-- Sample Prescription Document Paper -->
+                <div class="rx-sample-paper">
+                    <div class="rx-paper-header">
+                        <h3>RETSEPT BLANKASI</h3>
+                        <p>O'zbekiston Respublikasi Sog'liqni Saqlash Vazirligi</p>
+                    </div>
+
+                    <div class="rx-field-row">
+                        <span><strong>Sana:</strong> 06.10.2026</span>
+                        <span><strong>Bemor:</strong> Sobirov A. (35 yosh)</span>
+                    </div>
+
+                    <div class="rx-field-row">
+                        <span><strong>Davolovchi vrach:</strong> Dr. Karimov N.</span>
+                    </div>
+
+                    <div class="rx-latin-body">
+                        <strong>Rp.:</strong> Sol. Analgini 50% - 2 ml<br>
+                        <strong>D.t.d.</strong> N. 10 in ampull.<br>
+                        <strong>S.</strong> Mushak ichiga (i/m) 1 ampuladan og'riq bo'lganda.
+                    </div>
+
+                    <div class="rx-paper-footer">
+                        <div>
+                            <p style="font-size: 0.85rem; color: #64748b;">Vrach imzosi: <em>N.Karimov</em></p>
+                        </div>
+                        <div class="doctor-stamp">
+                            VRACH<br>MUHRI<br>№ 4821
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Explanation Steps -->
+                <div class="rx-guide-steps">
+                    <div class="guide-step-card">
+                        <div class="step-num-badge">1</div>
+                        <div class="step-content">
+                            <h4>Inscriptio (Sarlavha qismi)</h4>
+                            <p>Muassasa nomi, sana, bemorning familiyasi, yoshi hamda shifokorning ismi ko'rsatiladi.</p>
+                        </div>
+                    </div>
+
+                    <div class="guide-step-card">
+                        <div class="step-num-badge">2</div>
+                        <div class="step-content">
+                            <h4>Invocatio (Murojaat - Rp.:)</h4>
+                            <p><strong>Recipe</strong> so'zi bo'lib, "Oling" ma'nosini beradi. Har bir yangi dori alohida Rp.: bilan boshlanadi.</p>
+                        </div>
+                    </div>
+
+                    <div class="guide-step-card">
+                        <div class="step-num-badge">3</div>
+                        <div class="step-content">
+                            <h4>Designatio materiarum (Dori nomi va dozasi)</h4>
+                            <p>Dori vositasining lotincha nomi (odatda qaratqich kelishigida) va uning aniq dozasi (gramm, mg yoki ml da) yoziladi.</p>
+                        </div>
+                    </div>
+
+                    <div class="guide-step-card">
+                        <div class="step-num-badge">4</div>
+                        <div class="step-content">
+                            <h4>Subscriptio (Dori shakli va soni)</h4>
+                            <p><strong>D.t.d. N... in tab./amp.</strong> — Dorining shakli (tabletka, ampula, kapsula) va umumiy berilishi kerak bo'lgan soni.</p>
+                        </div>
+                    </div>
+
+                    <div class="guide-step-card">
+                        <div class="step-num-badge">5</div>
+                        <div class="step-content">
+                            <h4>Signatura (Qo'llash tartibi - S.)</h4>
+                            <p><strong>Signa</strong> — Bemorga tushunarli tilda (o'zbek yoki rus tilida) qachon, necha mahal va qanday ichish yoziladi.</p>
+                        </div>
+                    </div>
+
+                    <div class="guide-step-card">
+                        <div class="step-num-badge">6</div>
+                        <div class="step-content">
+                            <h4>Sigillum (Muhr va imzo)</h4>
+                            <p>Vrachning shaxsiy imzosi va uchburchak yoki shaxsiy muhri bosiladi.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. O'QILISH QOIDALARI SECTION -->
+        <section id="section-phonetics" class="app-section">
+            <div class="section-head">
+                <h2><i class="fas fa-volume-up"></i> Lotin Alifbosi va Tibbiy Talaffuz Qoidalari</h2>
+                <p>Tibbiyotda lotincha so'zlarni to'g'ri o'qish qoidalari. Istalgan so'zni bosib talaffuzini eshiting!</p>
+            </div>
+
+            <div id="phonetics-rules-container" class="phonetics-grid">
+                <!-- Populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- 6. VIKTORINA VA TEST SECTION -->
+        <section id="section-quiz" class="app-section">
+            <div class="section-head">
+                <h2><i class="fas fa-brain"></i> Shifokorlar Lotin Tili Viktorinasi</h2>
+                <p>O'z bilimingizni sinab ko'ring! Shifokorlar retseptlari va lotincha atamalarni qanchalik tushunasiz?</p>
+            </div>
+
+            <div class="quiz-container">
+                <!-- Welcome View -->
+                <div id="quiz-welcome-box" class="quiz-welcome-card">
+                    <i class="fas fa-graduation-cap quiz-welcome-icon"></i>
+                    <h3>Tibbiy Lotin Tili Bilimini Sinash</h3>
+                    <p>8 ta qiziqarli savol orqali retsept qisqartmalari, dori shakllari va klinik tashxislar bo'yicha darajangizni aniqlang.</p>
+                    <button id="start-quiz-btn" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Testni Boshlash
+                    </button>
+                </div>
+
+                <!-- Active Question Box -->
+                <div id="quiz-question-box" style="display: none;">
+                    <!-- Populated by JavaScript -->
+                </div>
+
+                <!-- Result Box -->
+                <div id="quiz-result-box" style="display: none;">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p><strong>MedLatin</strong> — Shifokorlar va Bemorlar Uchun Tibbiy Lotin Tili Dasturi &copy; 2026</p>
+            <p style="font-size:0.8rem; color:var(--text-muted);">Ushbu dastur HTML, CSS va JavaScript asosida yaratilgan bo'lib, to'g'ridan-to'g'ri <code>index.html</code> orqali ishlaydi.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
