@@ -90,6 +90,11 @@
     padding: 0;
 }
 
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
 body {
     font-family: var(--font-main);
     background-color: var(--bg-base);
@@ -97,11 +102,24 @@ body {
     min-height: 100vh;
     line-height: 1.6;
     overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
     background-image: 
         radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
         radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.08) 0px, transparent 50%),
         radial-gradient(at 50% 100%, rgba(139, 92, 246, 0.05) 0px, transparent 50%);
     background-attachment: fixed;
+}
+
+img, svg, video, canvas, audio, iframe {
+    max-width: 100%;
+    height: auto;
+}
+
+pre, code {
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 /* Container */
@@ -214,6 +232,7 @@ body {
     margin: 24px 0 32px 0;
     overflow-x: auto;
     scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
 }
 
 .nav-tab-bar::-webkit-scrollbar {
@@ -234,6 +253,7 @@ body {
     font-family: inherit;
     cursor: pointer;
     white-space: nowrap;
+    flex-shrink: 0;
     transition: var(--transition-smooth);
 }
 
@@ -414,6 +434,7 @@ body {
     padding-bottom: 12px;
     margin-bottom: 16px;
     scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
 }
 
 .rx-sample-pill {
@@ -426,6 +447,7 @@ body {
     font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
+    flex-shrink: 0;
     transition: var(--transition-smooth);
     display: inline-flex;
     align-items: center;
@@ -662,17 +684,24 @@ body {
     border-radius: 4px;
     color: #38bdf8;
     font-size: 0.92rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    display: inline-block;
+    max-width: 100%;
 }
 
 .line-meaning {
     font-size: 0.93rem;
     color: var(--text-primary);
     margin-bottom: 4px;
+    word-break: break-word;
 }
 
 .line-details-text {
     font-size: 0.84rem;
     color: var(--text-secondary);
+    word-break: break-word;
 }
 
 /* Term Chips */
@@ -696,6 +725,7 @@ body {
     border-radius: var(--radius-full);
     cursor: pointer;
     transition: var(--transition-smooth);
+    max-width: 100%;
 }
 
 .term-chip:hover {
@@ -868,6 +898,7 @@ body {
     padding-bottom: 6px;
     margin-top: 8px;
     scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
 }
 
 .diag-cat-pill {
@@ -880,6 +911,7 @@ body {
     font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
+    flex-shrink: 0;
     transition: var(--transition-smooth);
 }
 
@@ -1879,6 +1911,8 @@ body {
     border-radius: var(--radius-lg);
     max-width: 500px;
     width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
     padding: 24px;
     box-shadow: var(--shadow-lg);
 }
@@ -1963,4 +1997,772 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 8px;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN & MOBILE OPTIMIZATIONS
+   ========================================================================== */
+
+/* 1. Large Tablets & Small Laptops (<= 992px) */
+@media (max-width: 992px) {
+    .hero-banner {
+        padding: 32px 24px;
+    }
+    
+    .hero-title {
+        font-size: 1.85rem;
+    }
+    
+    .decoder-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    
+    .rx-guide-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+}
+
+/* 2. Tablets & Large Phones (<= 768px) */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 16px;
+    }
+
+    .site-header {
+        height: auto;
+    }
+
+    .header-inner {
+        height: 64px;
+    }
+
+    .logo-text h1 {
+        font-size: 1.15rem;
+    }
+
+    .logo-text span {
+        font-size: 0.7rem;
+    }
+
+    .nav-tab-bar {
+        margin: 16px 0 24px 0;
+        padding: 6px;
+        gap: 6px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .nav-tab-btn {
+        padding: 8px 14px;
+        font-size: 0.88rem;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    .hero-banner {
+        padding: 24px 18px;
+        margin-bottom: 24px;
+        border-radius: var(--radius-md);
+    }
+
+    .hero-banner::after {
+        font-size: 7rem;
+        right: 5px;
+        bottom: -15px;
+        opacity: 0.03;
+    }
+
+    .hero-title {
+        font-size: 1.55rem;
+        line-height: 1.3;
+        margin-bottom: 10px;
+    }
+
+    .hero-lead {
+        font-size: 0.94rem;
+        line-height: 1.55;
+    }
+
+    .section-head {
+        margin-bottom: 18px;
+    }
+
+    .section-head h2 {
+        font-size: 1.35rem;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .section-head p {
+        font-size: 0.88rem;
+    }
+
+    .editor-card,
+    .result-card,
+    .clinical-card {
+        padding: 18px 16px;
+        border-radius: var(--radius-md);
+    }
+
+    .dict-controls-wrap,
+    .diag-input-wrapper {
+        padding: 18px 16px;
+        margin-bottom: 20px;
+        border-radius: var(--radius-md);
+    }
+
+    /* Prevent unwanted iOS Safari input auto-zoom */
+    input[type="text"],
+    textarea,
+    select {
+        font-size: 16px !important;
+    }
+
+    .phonetics-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+    }
+
+    .phonetic-card {
+        padding: 16px;
+    }
+
+    .rx-sample-paper {
+        padding: 22px 18px;
+    }
+
+    .guide-step-card {
+        padding: 14px 16px;
+    }
+
+    .quiz-welcome-card,
+    .quiz-active-card,
+    .quiz-final-card {
+        padding: 32px 20px;
+    }
+
+    .site-footer {
+        margin-top: 50px;
+        padding: 24px 16px;
+    }
+}
+
+/* 3. Standard Mobile Phones (<= 640px) */
+@media (max-width: 640px) {
+    .diag-search-bar {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .diag-search-icon-left {
+        top: 23px;
+        left: 14px;
+    }
+
+    .diag-input {
+        width: 100%;
+        padding: 12px 14px 12px 42px;
+    }
+
+    #analyze-diag-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 12px;
+    }
+
+    .dict-filters-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .filters-list {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .filters-list::-webkit-scrollbar {
+        display: none;
+    }
+
+    .filter-pill {
+        flex-shrink: 0;
+        padding: 6px 12px;
+        font-size: 0.82rem;
+    }
+
+    .dict-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .clinical-meta-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .matched-others-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .morph-breakdown-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .phonetics-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .editor-btn-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .editor-btn-row .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .result-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .result-actions {
+        width: 100%;
+        display: flex;
+        gap: 8px;
+    }
+
+    .result-actions .btn {
+        flex: 1;
+        justify-content: center;
+        padding: 8px 10px;
+    }
+
+    .patient-summary-box {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px;
+    }
+
+    .clinical-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding-bottom: 14px;
+    }
+
+    .rx-field-row {
+        flex-direction: column;
+        gap: 4px;
+        padding-bottom: 6px;
+    }
+
+    .rx-paper-footer {
+        flex-direction: column-reverse;
+        align-items: center;
+        gap: 16px;
+        text-align: center;
+    }
+
+    .modal-overlay {
+        padding: 14px;
+    }
+
+    .modal-box {
+        padding: 18px 16px;
+        width: 100%;
+        max-height: 85vh;
+    }
+
+    .toast-container {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        max-width: calc(100% - 24px);
+    }
+
+    .toast-item {
+        width: 100%;
+        font-size: 0.84rem;
+        padding: 10px 14px;
+    }
+}
+
+/* 4. Compact Mobile Devices (<= 480px) */
+@media (max-width: 480px) {
+    .container {
+        padding: 0 12px;
+    }
+
+    .header-inner {
+        height: 58px;
+    }
+
+    .logo-brand {
+        gap: 8px;
+    }
+
+    .logo-icon-wrap {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1rem;
+    }
+
+    .logo-text h1 {
+        font-size: 1.05rem;
+    }
+
+    .logo-text span {
+        font-size: 0.66rem;
+        letter-spacing: 0.02em;
+    }
+
+    .theme-toggle-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 0.95rem;
+    }
+
+    .nav-tab-bar {
+        margin: 12px 0 18px 0;
+        padding: 4px;
+        gap: 4px;
+    }
+
+    .nav-tab-btn {
+        padding: 7px 11px;
+        font-size: 0.8rem;
+        gap: 5px;
+    }
+
+    .hero-banner {
+        padding: 18px 14px;
+        margin-bottom: 18px;
+    }
+
+    .hero-banner::after {
+        display: none;
+    }
+
+    .hero-badge {
+        font-size: 0.72rem;
+        padding: 3px 10px;
+        margin-bottom: 8px;
+    }
+
+    .hero-title {
+        font-size: 1.28rem;
+        line-height: 1.35;
+        margin-bottom: 8px;
+    }
+
+    .hero-lead {
+        font-size: 0.86rem;
+        line-height: 1.5;
+    }
+
+    .section-head {
+        margin-bottom: 14px;
+    }
+
+    .section-head h2 {
+        font-size: 1.18rem;
+        gap: 6px;
+    }
+
+    .section-head p {
+        font-size: 0.82rem;
+    }
+
+    .editor-card,
+    .result-card,
+    .clinical-card {
+        padding: 14px 12px;
+    }
+
+    .dict-controls-wrap,
+    .diag-input-wrapper {
+        padding: 14px 12px;
+    }
+
+    .card-title-row {
+        margin-bottom: 12px;
+    }
+
+    .card-title-row h3 {
+        font-size: 1rem;
+    }
+
+    .rx-samples-scroll {
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+    }
+
+    .rx-sample-pill {
+        padding: 5px 10px;
+        font-size: 0.76rem;
+        gap: 4px;
+    }
+
+    .rx-textarea {
+        min-height: 125px;
+        padding: 10px;
+        line-height: 1.5;
+    }
+
+    .preset-title {
+        font-size: 1.05rem;
+    }
+
+    .summary-icon-box {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        font-size: 1.1rem;
+    }
+
+    .summary-text-box h4 {
+        font-size: 0.92rem;
+    }
+
+    .summary-lead {
+        font-size: 0.86rem;
+    }
+
+    .section-subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 10px;
+    }
+
+    .line-card {
+        padding: 10px 12px;
+        gap: 8px;
+    }
+
+    .line-card-num {
+        width: 24px;
+        height: 24px;
+        min-width: 24px;
+        font-size: 0.76rem;
+    }
+
+    .raw-code code {
+        font-size: 0.8rem;
+        padding: 2px 6px;
+    }
+
+    .line-meaning {
+        font-size: 0.84rem;
+    }
+
+    .line-details-text {
+        font-size: 0.78rem;
+    }
+
+    .term-chips-grid {
+        gap: 6px;
+    }
+
+    .term-chip {
+        padding: 5px 10px;
+        gap: 6px;
+    }
+
+    .term-chip-title {
+        font-size: 0.82rem;
+    }
+
+    .term-chip-trans {
+        font-size: 0.76rem;
+    }
+
+    .safety-warning {
+        padding: 10px 12px;
+        font-size: 0.8rem;
+        gap: 8px;
+    }
+
+    .diag-search-icon-left {
+        left: 12px;
+        font-size: 0.95rem;
+        top: 21px;
+    }
+
+    .diag-input {
+        padding: 10px 12px 10px 36px;
+    }
+
+    .diag-cat-pill {
+        padding: 5px 10px;
+        font-size: 0.76rem;
+    }
+
+    .diag-sample-chip {
+        padding: 4px 8px;
+        font-size: 0.74rem;
+    }
+
+    .clinical-title-uz {
+        font-size: 1.18rem;
+    }
+
+    .clinical-title-lat {
+        font-size: 0.86rem;
+    }
+
+    .clinical-title-ru {
+        font-size: 0.8rem;
+    }
+
+    .clinical-explain-lead {
+        padding: 12px;
+    }
+
+    .clinical-explain-lead h4 {
+        font-size: 0.92rem;
+    }
+
+    .clinical-explain-lead p {
+        font-size: 0.88rem;
+    }
+
+    .clinical-meta-box {
+        padding: 12px;
+    }
+
+    .meta-value {
+        font-size: 0.88rem;
+    }
+
+    .morph-block {
+        padding: 12px;
+    }
+
+    .morph-text {
+        font-size: 1.15rem;
+    }
+
+    .morph-meaning {
+        font-size: 0.88rem;
+    }
+
+    .morph-desc {
+        font-size: 0.78rem;
+    }
+
+    .diag-tip-box {
+        padding: 12px;
+        font-size: 0.82rem;
+    }
+
+    .dict-search-icon {
+        left: 12px;
+        font-size: 0.95rem;
+    }
+
+    .dict-input {
+        padding: 10px 12px 10px 36px;
+    }
+
+    .filter-pill {
+        padding: 5px 10px;
+        font-size: 0.76rem;
+    }
+
+    .dict-card {
+        padding: 14px 12px;
+    }
+
+    .dict-card-title {
+        font-size: 1.1rem;
+    }
+
+    .dict-card-uzbek {
+        font-size: 0.86rem;
+        padding: 4px 8px;
+    }
+
+    .dict-card-desc {
+        font-size: 0.82rem;
+    }
+
+    .rx-sample-paper {
+        padding: 14px 10px;
+        border-left-width: 4px;
+    }
+
+    .rx-paper-header h3 {
+        font-size: 1.05rem;
+    }
+
+    .rx-paper-header p {
+        font-size: 0.8rem;
+    }
+
+    .rx-latin-body {
+        padding: 10px 8px;
+        font-size: 0.82rem;
+        line-height: 1.55;
+        margin: 14px 0;
+    }
+
+    .doctor-stamp {
+        width: 72px;
+        height: 72px;
+        font-size: 0.62rem;
+    }
+
+    .guide-step-card {
+        padding: 10px;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .step-num-badge {
+        width: 26px;
+        height: 26px;
+        min-width: 26px;
+        font-size: 0.78rem;
+    }
+
+    .step-content h4 {
+        font-size: 0.9rem;
+    }
+
+    .step-content p {
+        font-size: 0.8rem;
+    }
+
+    .phonetic-card {
+        padding: 12px 10px;
+    }
+
+    .phonetic-letter-badge {
+        font-size: 1.1rem;
+        padding: 4px 8px;
+    }
+
+    .phonetic-rule-text {
+        font-size: 0.82rem;
+    }
+
+    .phonetic-example-item {
+        padding: 6px 8px;
+        font-size: 0.82rem;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .ph-word {
+        font-size: 0.88rem;
+    }
+
+    .ph-uz {
+        font-size: 0.8rem;
+        width: 100%;
+    }
+
+    .quiz-welcome-card,
+    .quiz-active-card,
+    .quiz-final-card {
+        padding: 20px 12px;
+    }
+
+    .quiz-welcome-icon {
+        font-size: 2.2rem;
+        margin-bottom: 10px;
+    }
+
+    .quiz-welcome-card h3 {
+        font-size: 1.18rem;
+    }
+
+    .quiz-welcome-card p {
+        font-size: 0.84rem;
+        margin-bottom: 16px;
+    }
+
+    .quiz-question-title {
+        font-size: 0.98rem;
+        margin-bottom: 14px;
+    }
+
+    .quiz-option-btn {
+        padding: 10px 10px;
+        font-size: 0.82rem;
+        gap: 8px;
+    }
+
+    .quiz-option-btn .opt-num {
+        width: 24px;
+        height: 24px;
+        min-width: 24px;
+        font-size: 0.74rem;
+    }
+
+    .quiz-feedback-box {
+        padding: 12px 10px;
+        font-size: 0.82rem;
+    }
+
+    .result-score-circle {
+        width: 84px;
+        height: 84px;
+        margin-bottom: 12px;
+    }
+
+    .score-percent {
+        font-size: 1.45rem;
+    }
+
+    .result-headline {
+        font-size: 1.18rem;
+    }
+
+    .result-subtext {
+        font-size: 0.82rem;
+    }
+
+    .site-footer {
+        margin-top: 32px;
+        padding: 18px 10px;
+        font-size: 0.76rem;
+    }
+}
+
+/* 5. Ultra Compact Devices (<= 360px) */
+@media (max-width: 360px) {
+    .container {
+        padding: 0 8px;
+    }
+
+    .logo-text h1 {
+        font-size: 0.95rem;
+    }
+
+    .logo-text span {
+        font-size: 0.62rem;
+    }
+
+    .btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+
+    .nav-tab-btn {
+        padding: 6px 9px;
+        font-size: 0.76rem;
+    }
 }

@@ -62,6 +62,7 @@ function initNavigation() {
             sections.forEach(s => s.classList.remove('active'));
 
             btn.classList.add('active');
+            btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             const targetSection = document.getElementById(targetId);
             if (targetSection) {
                 targetSection.classList.add('active');
@@ -641,7 +642,7 @@ function renderCategoryDiagnoses(catName) {
                 </div>
             </div>
             <p style="color:var(--text-secondary); margin-bottom:20px;">Ushbu sohadagi eng ko'p qo'yiladigan tashxislar ro'yxati. To'liq tahlilini ko'rish uchun istalgan tashxis ustiga bosing:</p>
-            <div class="matched-others-grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
+            <div class="matched-others-grid">
     `;
 
     items.forEach(item => {
