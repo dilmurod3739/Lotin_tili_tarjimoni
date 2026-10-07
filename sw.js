@@ -2,7 +2,7 @@
  * MedLatin Service Worker for Android PWA & Offline Support
  */
 
-const CACHE_NAME = 'medlatin-v1.2';
+const CACHE_NAME = 'medlatin-v1.3';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -10,6 +10,9 @@ const ASSETS_TO_CACHE = [
     './app.js',
     './data.js',
     './manifest.json',
+    './icon-192.png',
+    './icon-512.png',
+    './icon.png',
     './icon-192.svg',
     './icon-512.svg',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'

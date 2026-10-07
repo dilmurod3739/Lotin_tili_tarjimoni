@@ -36,11 +36,22 @@ jobs:
       - name: Prepare Assets & Initialize Capacitor
         run: |
           mkdir -p www
-          cp index.html style.css app.js data.js icon-192.svg icon-512.svg manifest.json sw.js www/
+          cp index.html style.css app.js data.js icon-192.svg icon-512.svg icon-192.png icon-512.png icon.png manifest.json sw.js www/
           npm install @capacitor/core@^6.2.0 @capacitor/cli@^6.2.0 @capacitor/android@^6.2.0
           npx cap init "MedLatin" "uz.dilmurod.medlatin" --web-dir "www"
           npx cap add android
           npx cap sync android
+
+      - name: Set Custom App Launcher Icon for Android
+        run: |
+          for dir in android/app/src/main/res/mipmap-*; do
+            if [ -d "$dir" ]; then
+              cp icon-512.png "$dir/ic_launcher.png" 2>/dev/null || true
+              cp icon-512.png "$dir/ic_launcher_round.png" 2>/dev/null || true
+              cp icon-512.png "$dir/ic_launcher_foreground.png" 2>/dev/null || true
+            fi
+          done
+          echo "Custom Android launcher icons successfully updated!"
 
       - name: Build Android Debug APK
         run: |
