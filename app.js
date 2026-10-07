@@ -14,6 +14,8 @@ function initApp() {
     initDictionary();
     initPhonetics();
     initQuiz();
+    initPWA();
+    initAndroidOptimizations();
 }
 
 /* ==========================================================================
@@ -33,6 +35,7 @@ function initTheme() {
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('med_latin_theme', newTheme);
             updateThemeIcon(newTheme);
+            triggerHaptic(15);
         });
     }
 }
@@ -48,28 +51,70 @@ function updateThemeIcon(theme) {
 }
 
 /* ==========================================================================
-   2. NAVIGATION (Tabs)
+   2. NAVIGATION (Tabs & Android Bottom Navigation)
    ========================================================================== */
-function initNavigation() {
-    const navButtons = document.querySelectorAll('.nav-tab-btn');
-    const sections = document.querySelectorAll('.app-section');
+function triggerHaptic(duration = 15) {
+    if (window.navigator && window.navigator.vibrate) {
+        try { window.navigator.vibrate(duration); } catch(e){}
+    }
+}
 
-    navButtons.forEach(btn => {
+function switchSection(targetId, updateHistory = true) {
+    const allNavBtns = document.querySelectorAll('.nav-tab-btn, .mobile-nav-item');
+    const sections = document.querySelectorAll('.app-section');
+    const targetSection = document.getElementById(targetId);
+
+    if (!targetSection) return;
+
+    allNavBtns.forEach(btn => {
+        if (btn.getAttribute('data-target') === targetId) {
+            btn.classList.add('active');
+            if (btn.classList.contains('nav-tab-btn')) {
+                btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+
+    sections.forEach(s => s.classList.remove('active'));
+    targetSection.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    triggerHaptic(15);
+
+    if (updateHistory) {
+        try {
+            history.pushState({ section: targetId }, '', '#' + targetId);
+        } catch(e){}
+    }
+}
+
+function initNavigation() {
+    const allNavBtns = document.querySelectorAll('.nav-tab-btn, .mobile-nav-item');
+
+    allNavBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const targetId = btn.getAttribute('data-target');
-            
-            navButtons.forEach(b => b.classList.remove('active'));
-            sections.forEach(s => s.classList.remove('active'));
-
-            btn.classList.add('active');
-            btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-            const targetSection = document.getElementById(targetId);
-            if (targetSection) {
-                targetSection.classList.add('active');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (targetId) {
+                switchSection(targetId, true);
             }
         });
     });
+
+    // Android Hardware / Gesture Back Button handling
+    window.addEventListener('popstate', (e) => {
+        const targetId = (e.state && e.state.section) || location.hash.replace('#', '') || 'section-decoder';
+        switchSection(targetId, false);
+    });
+
+    // Handle initial hash link
+    if (location.hash) {
+        const initialTarget = location.hash.replace('#', '');
+        if (document.getElementById(initialTarget)) {
+            switchSection(initialTarget, false);
+        }
+    }
 }
 
 /* ==========================================================================
@@ -135,6 +180,7 @@ function initPrescriptionDecoder() {
             const resultBox = document.getElementById('rx-result-container');
             if (resultBox && resultBox.innerText) {
                 navigator.clipboard.writeText(resultBox.innerText).then(() => {
+                    triggerHaptic(20);
                     showToast("Tahlil natijasi nusxalandi!", "success");
                 }).catch(() => {
                     showToast("Nusxalashda xatolik yuz berdi", "error");
@@ -273,6 +319,7 @@ window.copyCurrentRxResult = function() {
     if (!currentAnalyzedRxText) return;
     const textToCopy = `Retsept:\n${currentAnalyzedRxText}\n\nXulosa:\n${currentPatientSummaryText}`;
     navigator.clipboard.writeText(textToCopy).then(() => {
+        triggerHaptic(20);
         showToast("Tahlil natijasi nusxalandi!", "success");
     }).catch(() => {
         showToast("Nusxalashda xatolik yuz berdi", "error");
@@ -1383,3 +1430,87 @@ function escapeHtml(str) {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
 }
+
+/* ==========================================================================
+   10. PWA & ANDROID ADAPTATIONS
+   ========================================================================== */
+function initPWA() {
+    // Service Worker registration
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js').catch(err => {
+                console.warn('SW registration fallback:', err);
+            });
+        });
+    }
+
+    // Android Chrome / Edge install prompt handling
+    let deferredPrompt = null;
+    const installBtn = document.getElementById('install-pwa-btn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (installBtn) {
+            installBtn.style.display = 'inline-flex';
+        }
+    });
+
+    if (installBtn) {
+        installBtn.addEventListener('click', async () => {
+            triggerHaptic(20);
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    showToast("MedLatin dasturi qurilmangizga o'rnatildi!", "success");
+                }
+                deferredPrompt = null;
+                installBtn.style.display = 'none';
+            } else {
+                showToast("Ilovani o'rnatish uchun brauzer menyusidan 'Bosh ekranga qo'shish' tugmasini bosing.", "info");
+            }
+        });
+    }
+
+    window.addEventListener('appinstalled', () => {
+        if (installBtn) installBtn.style.display = 'none';
+        showToast("MedLatin muvaffaqiyatli o'rnatildi!", "success");
+    });
+}
+
+function initAndroidOptimizations() {
+    const bottomNav = document.getElementById('mobile-bottom-nav');
+    if (!bottomNav) return;
+
+    // Detect virtual keyboard opening/closing on Android to prevent covering inputs
+    if (window.visualViewport) {
+        let initialHeight = window.visualViewport.height;
+        window.visualViewport.addEventListener('resize', () => {
+            if (window.visualViewport.height < initialHeight * 0.78) {
+                bottomNav.classList.add('nav-hidden');
+            } else {
+                bottomNav.classList.remove('nav-hidden');
+                initialHeight = window.visualViewport.height;
+            }
+        });
+    }
+
+    // Mobile inputs focus listener fallback
+    const allInputs = document.querySelectorAll('input, textarea');
+    allInputs.forEach(input => {
+        input.addEventListener('focus', () => {
+            if (window.innerWidth <= 768) {
+                bottomNav.classList.add('nav-hidden');
+            }
+        });
+        input.addEventListener('blur', () => {
+            if (window.innerWidth <= 768) {
+                setTimeout(() => {
+                    bottomNav.classList.remove('nav-hidden');
+                }, 150);
+            }
+        });
+    });
+}
+

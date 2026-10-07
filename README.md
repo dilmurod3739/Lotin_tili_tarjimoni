@@ -32,17 +32,22 @@ Loyihani yaratishda faqat toza **HTML5**, **CSS3** va **Vanilla JavaScript** ish
 6. 🏆 **Interaktiv Viktorina / Test (Quiz):**
    - 8 ta sinov savollari orqali bilimni tekshirish va yakuniy ball hisoblash.
 
-7. 📱 **Android va Smartfonlarga To'liq Moslashuvchanlik (Mobile Responsive):**
-   - Android Chrome, Samsung Internet va boshqa mobil brauzerlar uchun maxsus moslashtirilgan.
-   - Mobil virtual klaviatura qidiruvi (`enterkeyhint="search"`), 48px+ sensorli tugmalar, teginish animatsiyalari.
-   - Tungi (Dark) va Kunduzgi (Light) tibbiy rejim.
+7. 📱 **Android va Smartfonlarga To'liq Moslashuvchanlik (PWA & Mobile Native UX):**
+   - **Progressive Web App (PWA):** Android qurilmalarga to'g'ridan-to'g'ri APK kabi o'rnatish (`manifest.json` va "O'rnatish" tugmasi orqali).
+   - **Oflayn rejim:** Service Worker (`sw.js`) orqali shifoxona va klinikalarda internetsiz ham uzluksiz ishlaydi.
+   - **Android Pastki Navigatsiya Paneli:** Bosh barmoq bilan qulay boshqarish uchun pastki menyu (Retsept, Tashxis, Lug'at, Qoidalar, Talaffuz, Test).
+   - **Android "Orqaga" tugmasi / jesti:** Sahifalararo o'tishda Android apparat yoki jest orqaga tugmasi brauzerni yopib yubormasdan oldingi bo'limga qaytaradi.
+   - **Haptik tebranish (Vibration API):** Harakatlarda yoqimli taktil fikr-mulohaza (`navigator.vibrate`).
+   - **Avto-zoom cheklovi:** Mobil klaviatura ochilganda brauzer buzilib ketishini oldini oluvchi 16px font qoidasi va `visualViewport` moslashuvi.
+   - **Bottom Sheet modal oynalari:** Lotincha atamalar tafsiloti Android tizimiga xos pastdan chiquvchi varaq ko'rinishida ochiladi.
+   - **Tungi (Dark) va Kunduzgi (Light) tibbiy rejim.**
 
 ---
 
 ## 🚀 Ishga Tushirish
 
 Hech qanday o'rnatish shart emas! 
-Shunchaki `index.html` faylini istalgan brauzerda (Chrome, Edge, Firefox, Safari) oching.
+Shunchaki `index.html` faylini istalgan brauzerda (Chrome, Edge, Firefox, Safari) oching yoki Android telefoningizda brauzer orqali ochib, "Bosh ekranga qo'shish" (O'rnatish) tugmasini bosing.
 
 ```bash
 # Loyihani klonlash:
@@ -60,10 +65,14 @@ start index.html
 ## 📂 Loyiha Tuzilishi
 
 ```text
-├── index.html        # Asosiy veb sahifa
-├── style.css         # Dizayn va vizual stillar (Dark/Light mode)
-├── data.js           # Katta tibbiy ma'lumotlar bazasi (retseptlar, tashxislar, lug'at)
-├── app.js            # Mantiq, tahlil, qidiruv, audio va interaktiv boshqaruv
+├── index.html        # Asosiy veb sahifa va mobil navigatsiya
+├── style.css         # Dizayn, Dark/Light mode va Android moslashuvchanlik
+├── data.js           # Katta tibbiy ma'lumotlar bazasi (200+ tashxis, retseptlar, lug'at)
+├── app.js            # Mantiq, qidiruv, audio, Android navigatsiya va haptika
+├── manifest.json     # Android PWA o'rnatish konfiguratsiyasi
+├── sw.js             # Oflayn ishlash uchun Service Worker
+├── icon-192.svg      # Android 192x192 ilova ikonasi
+├── icon-512.svg      # Android 512x512 ilova ikonasi
 └── reja.txt          # Loyiha hujjatlari va reja
 ```
 

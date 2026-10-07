@@ -5,10 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>MedLatin — Shifokorlar Lotin Tili va Retseptlar Tarjimoni</title>
     <meta name="description" content="Doktorlar yozgan lotin tilidagi retseptlar, qisqartmalar, tashxislar va tibbiy atamalarni oddiy o'zbek tilida tushuntirib beruvchi interaktiv veb dastur.">
-    <meta name="theme-color" content="#10b981">
+    <meta name="theme-color" content="#0f172a">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="application-name" content="MedLatin">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon-192.svg">
+    <link rel="apple-touch-icon" href="icon-192.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -28,6 +32,9 @@
             </a>
 
             <div class="header-actions">
+                <button class="install-pwa-btn" id="install-pwa-btn" title="Android ilova sifatida o'rnatish" style="display: none;">
+                    <i class="fas fa-mobile-alt"></i> <span>O'rnatish</span>
+                </button>
                 <button class="theme-toggle-btn" id="theme-toggle-btn" title="Mavzuni o'zgartirish (Tun/Kun)" aria-label="Mavzuni o'zgartirish">
                     <i class="fas fa-sun" id="theme-icon"></i>
                 </button>
@@ -318,6 +325,34 @@
             <p style="font-size:0.8rem; color:var(--text-muted);">Ushbu dastur HTML, CSS va JavaScript asosida yaratilgan bo'lib, to'g'ridan-to'g'ri <code>index.html</code> orqali ishlaydi.</p>
         </div>
     </footer>
+
+    <!-- Android Native Bottom Navigation Bar -->
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav" aria-label="Mobil navigatsiya paneli">
+        <button class="mobile-nav-item active" data-target="section-decoder">
+            <i class="fas fa-file-prescription"></i>
+            <span>Retsept</span>
+        </button>
+        <button class="mobile-nav-item" data-target="section-diagnosis">
+            <i class="fas fa-stethoscope"></i>
+            <span>Tashxis</span>
+        </button>
+        <button class="mobile-nav-item" data-target="section-dictionary">
+            <i class="fas fa-book-medical"></i>
+            <span>Lug'at</span>
+        </button>
+        <button class="mobile-nav-item" data-target="section-guide">
+            <i class="fas fa-clipboard-list"></i>
+            <span>Qoidalar</span>
+        </button>
+        <button class="mobile-nav-item" data-target="section-phonetics">
+            <i class="fas fa-volume-up"></i>
+            <span>Talaffuz</span>
+        </button>
+        <button class="mobile-nav-item" data-target="section-quiz">
+            <i class="fas fa-brain"></i>
+            <span>Test</span>
+        </button>
+    </nav>
 
     <!-- Scripts -->
     <script src="data.js"></script>

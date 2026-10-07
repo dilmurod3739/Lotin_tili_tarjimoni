@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <defs>
+    <linearGradient id="bgGrad192" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#064e3b"/>
+    </linearGradient>
+    <linearGradient id="emeraldGrad192" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="192" height="192" rx="46" fill="url(#bgGrad192)"/>
+  <circle cx="96" cy="96" r="72" fill="none" stroke="url(#emeraldGrad192)" stroke-width="3" stroke-dasharray="6 4" opacity="0.4"/>
+  
+  <rect x="82" y="44" width="28" height="104" rx="9" fill="url(#emeraldGrad192)"/>
+  <rect x="44" y="82" width="104" height="28" rx="9" fill="url(#emeraldGrad192)"/>
+  
+  <circle cx="96" cy="96" r="24" fill="#0f172a" stroke="#34d399" stroke-width="3"/>
+  <text x="96" y="104" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="900" fill="#38bdf8" text-anchor="middle" font-style="italic">Rx</text>
+</svg>
