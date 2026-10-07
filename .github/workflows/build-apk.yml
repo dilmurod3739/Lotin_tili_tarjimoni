@@ -94,8 +94,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         continue-on-error: true
         with:
-          tag_name: v1.2.1
-          name: "MedLatin v1.2.1 (Android APK)"
+          tag_name: v1.2.2
+          name: "MedLatin v1.2.2 (Android APK)"
           draft: false
           prerelease: false
           make_latest: true

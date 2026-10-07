@@ -179,22 +179,14 @@ pre, code {
 }
 
 .logo-text h1 {
-    font-size: 1.25rem;
+    font-size: 1.35rem;
     font-weight: 800;
     letter-spacing: -0.02em;
     background: linear-gradient(120deg, var(--text-primary), var(--secondary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin: 0;
-    line-height: 1.2;
-}
-
-.logo-text span {
-    font-size: 0.75rem;
-    color: var(--primary);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+    line-height: 1;
 }
 
 .header-actions {
