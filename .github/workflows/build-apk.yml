@@ -94,8 +94,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         continue-on-error: true
         with:
-          tag_name: v1.2.0
-          name: "MedLatin v1.2.0 (Android APK - Yangi 3D Ikonka)"
+          tag_name: v1.2.1
+          name: "MedLatin v1.2.1 (Android APK)"
           draft: false
           prerelease: false
           make_latest: true
