@@ -1,0 +1,86 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    name: Build MedLatin Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Set up Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platforms;android-34 build-tools;34.0.0'
+
+      - name: Prepare Assets & Initialize Capacitor
+        run: |
+          mkdir -p www
+          cp index.html style.css app.js data.js icon-192.svg icon-512.svg manifest.json sw.js www/
+          npm install @capacitor/core@^6.2.0 @capacitor/cli@^6.2.0 @capacitor/android@^6.2.0
+          npx cap init "MedLatin" "uz.dilmurod.medlatin" --web-dir "www"
+          npx cap add android
+          npx cap sync android
+
+      - name: Build Android Debug APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Copy & Rename APK
+        run: |
+          mkdir -p release-output
+          cp android/app/build/outputs/apk/debug/app-debug.apk release-output/MedLatin.apk
+          echo "APK successfully generated at release-output/MedLatin.apk"
+          ls -lh release-output/MedLatin.apk
+
+      - name: Upload APK as Workflow Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MedLatin-Android-APK
+          path: release-output/MedLatin.apk
+          retention-days: 30
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        continue-on-error: true
+        with:
+          tag_name: v1.0.0
+          name: "MedLatin v1.0.0 (Android APK)"
+          draft: false
+          prerelease: false
+          make_latest: true
+          body: |
+            ## 📱 MedLatin — Shifokorlar Lotin Tili Dasturi (Android APK)
+
+            Android smartfonlar uchun rasmiy **MedLatin.apk** o'rnatish fayli!
+
+            ### 📥 O'rnatish yo'riqnomasi:
+            1. Quyidagi **MedLatin.apk** faylini yuklab oling.
+            2. Telefoningizda faylni ochib, **"O'rnatish" (Установить)** tugmasini bosing.
+            3. Agar brauzer yoki telefon ruxsat so'rasa, *"Noma'lum manbalardan o'rnatishga ruxsat berish"* bandini tasdiqlang.
+            4. Dastur to'liq oflayn (internetsiz) ham ishlaydi!
+          files: release-output/MedLatin.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -2,7 +2,22 @@
 
 MedLatin — shifokorlar (doktorlar) yozgan lotin tilidagi retseptlar, qisqartmalar (abbreviaturalar), dori shakllari va klinik tashxislarni oddiy bemorlar va tibbiyot talabalari uchun tushunarli o'zbek tiliga tarjima qilib, to'liq izohlab beruvchi zamonaviy interaktiv veb-dastur.
 
-Loyihani yaratishda faqat toza **HTML5**, **CSS3** va **Vanilla JavaScript** ishlatilgan. Hech qanday murakkab kutubxonalar yoki serverlar talab etilmaydi — to'g'ridan-to'g'ri `index.html` orqali brauzerda ishga tushadi!
+---
+
+## 📱 Android APK Faylini Yuklab Olish (Yuklab olish va O'rnatish)
+
+Android telefoningizga o'rnatish uchun tayyor **`MedLatin.apk`** fayli:
+
+- 📥 **To'g'ridan-to'g'ri APK yuklab olish (GitHub Releases):**  
+  👉 **[MedLatin.apk ni Yuklab Olish (Releases)](https://github.com/dilmurod3739/Lotin_tili_tarjimoni/releases)**
+- ⚡ **Avtomatik yig'ilgan APK (GitHub Actions Artifacts):**  
+  👉 **[GitHub Actions Artifacts sahifasi](https://github.com/dilmurod3739/Lotin_tili_tarjimoni/actions)**
+
+### 📲 Android-da o'rnatish tartibi:
+1. Yuqoridagi havola orqali **`MedLatin.apk`** faylini telefoningizga yuklab oling.
+2. Yuklab olingan faylni oching va **"O'rnatish" (Установить)** tugmasini bosing.
+3. Agar telefon *"Noma'lum manbalardan o'rnatish"* haqida xabar bersa, unga ruxsat bering.
+4. Ilova muvaffaqiyatli o'rnatiladi va to'liq **internetsiz (oflayn)** ham ishlaydi!
 
 ---
 

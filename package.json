@@ -1,0 +1,18 @@
+{
+  "name": "medlatin",
+  "version": "1.0.0",
+  "description": "MedLatin — Shifokorlar Lotin Tili va Retseptlar Portali",
+  "main": "index.html",
+  "scripts": {
+    "start": "echo 'MedLatin is running'"
+  },
+  "keywords": [
+    "medical",
+    "latin",
+    "android",
+    "pwa",
+    "apk"
+  ],
+  "author": "dilmurod3739",
+  "license": "MIT"
+}
