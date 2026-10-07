@@ -338,86 +338,17 @@
         </div>
     </footer>
 
-    <!-- Ro'yxatdan o'tish va Kirish Modali (Auth Modal) -->
+    <!-- Kirish Modali (Login Modal) -->
     <div class="modal-overlay auth-modal-overlay" id="auth-modal" style="display: none;">
         <div class="modal-box auth-modal-box animated-fade-in" onclick="event.stopPropagation()">
             <div class="modal-header auth-modal-header">
-                <div class="auth-tabs-row">
-                    <button class="auth-tab-btn active" id="tab-register-btn" type="button">
-                        <i class="fas fa-user-plus"></i> Ro'yxatdan o'tish
-                    </button>
-                    <button class="auth-tab-btn" id="tab-login-btn" type="button">
-                        <i class="fas fa-sign-in-alt"></i> Kirish
-                    </button>
-                </div>
+                <h3 class="auth-modal-title"><i class="fas fa-sign-in-alt"></i> Tizimga Kirish</h3>
                 <button class="close-modal-btn" id="close-auth-modal-btn" type="button" aria-label="Yopish">&times;</button>
             </div>
 
             <div class="modal-body auth-modal-body">
-                <!-- 1. Ro'yxatdan o'tish formasi -->
-                <form id="register-form" class="auth-form" autocomplete="on">
-                    <div class="auth-form-lead">
-                        <h4><i class="fas fa-shield-alt"></i> MedLatin Shaxsiy Kabineti</h4>
-                        <p>Tibbiy retseptlar va tahlillardan to'liq foydalanish uchun ro'yxatdan o'ting.</p>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="reg-name"><i class="fas fa-user"></i> To'liq ismingiz:</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-id-badge input-icon-left"></i>
-                            <input type="text" id="reg-name" class="auth-input" placeholder="Masalan: Dr. Sardor Rahimov" required autocomplete="name">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="reg-role"><i class="fas fa-user-tag"></i> Mutaxassisligingiz:</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-stethoscope input-icon-left"></i>
-                            <select id="reg-role" class="auth-input auth-select">
-                                <option value="Shifokor (Vrach)">Shifokor (Vrach)</option>
-                                <option value="Tibbiyot talabasi">Tibbiyot talabasi</option>
-                                <option value="Farmatsevt / Provizor">Farmatsevt / Provizor</option>
-                                <option value="Hamshira / Feldsher">Hamshira / Feldsher</option>
-                                <option value="Bemor / Boshqa">Bemor / Boshqa</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="reg-password"><i class="fas fa-lock"></i> Parol:</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-key input-icon-left"></i>
-                            <input type="password" id="reg-password" class="auth-input" placeholder="Kamida 4 ta belgi..." required autocomplete="new-password">
-                            <button type="button" class="pwd-toggle-btn" data-target="reg-password" title="Parolni ko'rsatish">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="reg-password-confirm"><i class="fas fa-lock"></i> Parolni tasdiqlang:</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-check-circle input-icon-left"></i>
-                            <input type="password" id="reg-password-confirm" class="auth-input" placeholder="Parolni qayta kiriting..." required autocomplete="new-password">
-                            <button type="button" class="pwd-toggle-btn" data-target="reg-password-confirm" title="Parolni ko'rsatish">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div id="reg-error-box" class="auth-error-box" style="display: none;"></div>
-
-                    <button type="submit" class="btn btn-primary auth-submit-btn">
-                        <i class="fas fa-user-check"></i> Ro'yxatdan O'tish
-                    </button>
-                </form>
-
-                <!-- 2. Kirish formasi -->
-                <form id="login-form" class="auth-form" style="display: none;" autocomplete="on">
-                    <div class="auth-form-lead">
-                        <h4><i class="fas fa-sign-in-alt"></i> Tizimga Kirish</h4>
-                        <p>Avval ro'yxatdan o'tgan ismingiz va parolingizni kiriting.</p>
-                    </div>
+                <form id="login-form" class="auth-form" autocomplete="on">
+                    <p class="auth-subtitle">MedLatin portaliga kirish uchun ismingiz va parolingizni kiriting.</p>
 
                     <div class="form-group">
                         <label for="login-name"><i class="fas fa-user"></i> Ismingiz:</label>

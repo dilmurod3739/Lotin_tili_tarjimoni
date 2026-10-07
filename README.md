@@ -42,10 +42,10 @@ Loyihani yaratishda faqat toza **HTML5**, **CSS3** va **Vanilla JavaScript** ish
    - **Bottom Sheet modal oynalari:** Lotincha atamalar tafsiloti Android tizimiga xos pastdan chiquvchi varaq ko'rinishida ochiladi.
    - **Tungi (Dark) va Kunduzgi (Light) tibbiy rejim.**
 
-8. 🔐 **Shaxsiy Kabinet va Ro'yxatdan O'tish (Auth & Profile):**
-   - **Ro'yxatdan o'tish (Register):** Ismi, mutaxassisligi (Shifokor, Talaba, Farmatsevt va h.k.) hamda paroli orqali tezkor hisob yaratish.
-   - **Tizimga kirish (Login):** Ism va parol orqali tizimga kirish, parolni ko'rsatish/yashirish ko'z belgisi.
-   - **Sessiyani eslab qolish:** `localStorage` orqali foydalanuvchi ma'lumotlari xavfsiz saqlanadi, sahifa yangilanganda ham hisob faol qoladi hamda istalgan payt chiqish (Logout) mumkin.
+8. 🔐 **Tizimga Kirish (Login & Profil):**
+   - **Tezkor kirish:** Faqat Ism va Parol orqali ortiqcha qiyinchiliklarsiz bitta qulay oynada tizimga kirish.
+   - **Parol xavfsizligi:** Parolni ko'rsatish/yashirish ko'z belgisi (👁️) va xatolar nazorati.
+   - **Sessiyani eslab qolish:** `localStorage` orqali foydalanuvchi ma'lumotlari saqlanadi, sahifa yangilanganda ham hisob faol qoladi hamda istalgan payt bitta bosishda chiqish (Logout) mumkin.
 
 ---
 
