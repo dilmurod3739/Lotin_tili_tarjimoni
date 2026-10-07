@@ -16,6 +16,7 @@ function initApp() {
     initQuiz();
     initPWA();
     initAndroidOptimizations();
+    initAuth();
 }
 
 /* ==========================================================================
@@ -1513,4 +1514,276 @@ function initAndroidOptimizations() {
         });
     });
 }
+
+/* ==========================================================================
+   11. AUTHENTICATION & USER REGISTRATION (Ro'yxatdan o'tish va Kirish)
+   ========================================================================== */
+function initAuth() {
+    const authModal = document.getElementById('auth-modal');
+    const openAuthBtn = document.getElementById('open-auth-btn');
+    const closeAuthBtn = document.getElementById('close-auth-modal-btn');
+    const tabRegisterBtn = document.getElementById('tab-register-btn');
+    const tabLoginBtn = document.getElementById('tab-login-btn');
+    const registerForm = document.getElementById('register-form');
+    const loginForm = document.getElementById('login-form');
+    const logoutBtn = document.getElementById('logout-btn');
+    const regErrorBox = document.getElementById('reg-error-box');
+    const loginErrorBox = document.getElementById('login-error-box');
+
+    // Update Header UI on load
+    updateAuthUI();
+
+    // Open Modal
+    if (openAuthBtn && authModal) {
+        openAuthBtn.addEventListener('click', () => {
+            triggerHaptic(15);
+            authModal.style.display = 'flex';
+            clearAuthErrors();
+            switchAuthTab('register');
+        });
+    }
+
+    // Close Modal
+    function closeAuthModal() {
+        if (authModal) {
+            authModal.style.display = 'none';
+            clearAuthErrors();
+        }
+    }
+
+    if (closeAuthBtn) {
+        closeAuthBtn.addEventListener('click', closeAuthModal);
+    }
+
+    if (authModal) {
+        authModal.addEventListener('click', (e) => {
+            if (e.target === authModal) {
+                closeAuthModal();
+            }
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && authModal && authModal.style.display === 'flex') {
+            closeAuthModal();
+        }
+    });
+
+    // Tab toggles
+    function switchAuthTab(tab) {
+        clearAuthErrors();
+        if (tab === 'register') {
+            if (tabRegisterBtn) tabRegisterBtn.classList.add('active');
+            if (tabLoginBtn) tabLoginBtn.classList.remove('active');
+            if (registerForm) registerForm.style.display = 'block';
+            if (loginForm) loginForm.style.display = 'none';
+        } else {
+            if (tabLoginBtn) tabLoginBtn.classList.add('active');
+            if (tabRegisterBtn) tabRegisterBtn.classList.remove('active');
+            if (loginForm) loginForm.style.display = 'block';
+            if (registerForm) registerForm.style.display = 'none';
+        }
+        triggerHaptic(10);
+    }
+
+    if (tabRegisterBtn) {
+        tabRegisterBtn.addEventListener('click', () => switchAuthTab('register'));
+    }
+
+    if (tabLoginBtn) {
+        tabLoginBtn.addEventListener('click', () => switchAuthTab('login'));
+    }
+
+    // Password Visibility Toggles
+    const pwdToggles = document.querySelectorAll('.pwd-toggle-btn');
+    pwdToggles.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-target');
+            const targetInput = document.getElementById(targetId);
+            if (targetInput) {
+                const isPassword = targetInput.type === 'password';
+                targetInput.type = isPassword ? 'text' : 'password';
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.className = isPassword ? 'fas fa-eye-slash' : 'fas fa-eye';
+                }
+            }
+        });
+    });
+
+    function clearAuthErrors() {
+        if (regErrorBox) {
+            regErrorBox.style.display = 'none';
+            regErrorBox.textContent = '';
+        }
+        if (loginErrorBox) {
+            loginErrorBox.style.display = 'none';
+            loginErrorBox.textContent = '';
+        }
+    }
+
+    function showAuthError(box, msg) {
+        if (box) {
+            box.style.display = 'flex';
+            box.innerHTML = `<i class="fas fa-exclamation-circle"></i> <span>${escapeHtml(msg)}</span>`;
+            triggerHaptic(30);
+        }
+    }
+
+    // Register Form Handler
+    if (registerForm) {
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            clearAuthErrors();
+
+            const nameInput = document.getElementById('reg-name');
+            const roleInput = document.getElementById('reg-role');
+            const pwdInput = document.getElementById('reg-password');
+            const pwdConfirmInput = document.getElementById('reg-password-confirm');
+
+            const name = nameInput ? nameInput.value.trim() : '';
+            const role = roleInput ? roleInput.value : 'Shifokor (Vrach)';
+            const password = pwdInput ? pwdInput.value : '';
+            const passwordConfirm = pwdConfirmInput ? pwdConfirmInput.value : '';
+
+            if (!name || name.length < 2) {
+                showAuthError(regErrorBox, "Iltimos, to'liq ismingizni kiriting (kamida 2 ta belgi)!");
+                return;
+            }
+
+            if (!password || password.length < 4) {
+                showAuthError(regErrorBox, "Parol kamida 4 ta belgidan iborat bo'lishi kerak!");
+                return;
+            }
+
+            if (password !== passwordConfirm) {
+                showAuthError(regErrorBox, "Kiritilgan parollar bir-biriga mos kelmadi!");
+                return;
+            }
+
+            // Load registered users from storage
+            let users = [];
+            try {
+                users = JSON.parse(localStorage.getItem('med_latin_users') || '[]');
+            } catch(err) {
+                users = [];
+            }
+
+            // Check if name already exists
+            const existingUser = users.find(u => u.name.toLowerCase() === name.toLowerCase());
+            if (existingUser) {
+                showAuthError(regErrorBox, "Ushbu ism bilan allaqachon ro'yxatdan o'tilgan. Iltimos, Kirish bo'limidan kiring yoki boshqa ism yozing.");
+                return;
+            }
+
+            // Save new user
+            const newUser = {
+                name,
+                role,
+                password,
+                createdAt: new Date().toISOString()
+            };
+            users.push(newUser);
+            localStorage.setItem('med_latin_users', JSON.stringify(users));
+
+            // Set current active user session
+            const activeSession = { name, role };
+            localStorage.setItem('med_latin_user', JSON.stringify(activeSession));
+
+            triggerHaptic(25);
+            closeAuthModal();
+            registerForm.reset();
+            updateAuthUI();
+            showToast(`Xush kelibsiz, ${name}! Ro'yxatdan muvaffaqiyatli o'tdingiz.`, 'success');
+        });
+    }
+
+    // Login Form Handler
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            clearAuthErrors();
+
+            const nameInput = document.getElementById('login-name');
+            const pwdInput = document.getElementById('login-password');
+
+            const name = nameInput ? nameInput.value.trim() : '';
+            const password = pwdInput ? pwdInput.value : '';
+
+            if (!name) {
+                showAuthError(loginErrorBox, "Iltimos, ismingizni kiriting!");
+                return;
+            }
+
+            if (!password) {
+                showAuthError(loginErrorBox, "Iltimos, parolingizni kiriting!");
+                return;
+            }
+
+            // Check registered users
+            let users = [];
+            try {
+                users = JSON.parse(localStorage.getItem('med_latin_users') || '[]');
+            } catch(err) {
+                users = [];
+            }
+
+            const matchedUser = users.find(u => u.name.toLowerCase() === name.toLowerCase());
+
+            if (!matchedUser) {
+                showAuthError(loginErrorBox, "Bunday foydalanuvchi topilmadi. Avval Ro'yxatdan o'ting.");
+                return;
+            }
+
+            if (matchedUser.password !== password) {
+                showAuthError(loginErrorBox, "Parol noto'g'ri kiritildi! Qayta urinib ko'ring.");
+                return;
+            }
+
+            // Login successful
+            const activeSession = { name: matchedUser.name, role: matchedUser.role || 'Shifokor' };
+            localStorage.setItem('med_latin_user', JSON.stringify(activeSession));
+
+            triggerHaptic(25);
+            closeAuthModal();
+            loginForm.reset();
+            updateAuthUI();
+            showToast(`Xush kelibsiz, ${matchedUser.name}!`, 'success');
+        });
+    }
+
+    // Logout Handler
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            triggerHaptic(20);
+            localStorage.removeItem('med_latin_user');
+            updateAuthUI();
+            showToast("Tizimdan muvaffaqiyatli chiqdingiz.", "info");
+        });
+    }
+}
+
+function updateAuthUI() {
+    const openAuthBtn = document.getElementById('open-auth-btn');
+    const profileBadge = document.getElementById('user-profile-badge');
+    const displayName = document.getElementById('user-display-name');
+
+    let currentUser = null;
+    try {
+        currentUser = JSON.parse(localStorage.getItem('med_latin_user'));
+    } catch(err) {
+        currentUser = null;
+    }
+
+    if (currentUser && currentUser.name) {
+        if (openAuthBtn) openAuthBtn.style.display = 'none';
+        if (profileBadge) profileBadge.style.display = 'inline-flex';
+        if (displayName) displayName.textContent = currentUser.name;
+    } else {
+        if (openAuthBtn) openAuthBtn.style.display = 'inline-flex';
+        if (profileBadge) profileBadge.style.display = 'none';
+    }
+}
+
 
