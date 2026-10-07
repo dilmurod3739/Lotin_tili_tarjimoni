@@ -498,7 +498,7 @@ function initDiagnosisExplainer() {
             }
 
             autocompleteList.innerHTML = matches.map(m => `
-                <div class="diag-autocomplete-item" onclick="selectDiagSuggestion('${escapeHtml(m.uz.replace(/'/g, ''))}')">
+                <div class="diag-autocomplete-item" data-term="${escapeHtml(m.uz)}" onclick="selectDiagSuggestion(this.getAttribute('data-term'))">
                     <div>
                         <div class="diag-auto-main">${escapeHtml(m.uz)}</div>
                         <div class="diag-auto-sub">${escapeHtml(m.lat)} • ${escapeHtml(m.ru || '')}</div>
@@ -588,7 +588,7 @@ function findClinicalDiagnoses(query) {
         ].filter(Boolean).join(' ').toLowerCase();
 
         // Exact matches
-        if (d.uz.toLowerCase() === clean || d.lat.toLowerCase() === clean || (d.abbr && d.abbr.toLowerCase() === clean)) {
+        if ((d.id && d.id.toLowerCase() === clean) || d.uz.toLowerCase() === clean || d.lat.toLowerCase() === clean || (d.abbr && d.abbr.toLowerCase() === clean)) {
             score += 100;
         } else if (d.uz.toLowerCase().includes(clean) || d.lat.toLowerCase().includes(clean)) {
             score += 60;

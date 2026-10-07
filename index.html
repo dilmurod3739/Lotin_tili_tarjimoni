@@ -130,47 +130,12 @@
                 <div class="diag-search-bar-wrap">
                     <div class="diag-search-bar">
                         <i class="fas fa-search diag-search-icon-left"></i>
-                        <input type="text" id="diag-input" class="diag-input" placeholder="Doktor yozgan istalgan tashxisni yozing (masalan: Surunkali gastrit, Pnevmoniya, Gipertoniya, Infarkt, Qandli diabet, Insult, Pielonefrit, Osteoxondroz, Appenditsit, Gaymorit)..." value="Surunkali gastrit" autocomplete="off">
+                        <input type="text" id="diag-input" class="diag-input" placeholder="Doktor yozgan istalgan tashxisni yozing (masalan: Surunkali gastrit, Pnevmoniya, Gipertoniya, Infarkt, Qandli diabet, Insult, Pielonefrit, Osteoxondroz, Appenditsit, Gaymorit)..." value="Surunkali gastrit" autocomplete="off" enterkeyhint="search" inputmode="search">
                         <button id="analyze-diag-btn" class="btn btn-primary">
                             <i class="fas fa-microscope"></i> Tahlil Qilish
                         </button>
                     </div>
                     <div id="diag-autocomplete-list" class="diag-autocomplete-dropdown" style="display: none;"></div>
-                </div>
-
-                <!-- Organ System Filter Tabs -->
-                <div class="diag-categories-row">
-                    <span class="samples-label"><i class="fas fa-layer-group"></i> A'zolar bo'yicha:</span>
-                    <div class="diag-category-pills">
-                        <button class="diag-cat-pill active" data-cat="all">Barcha tashxislar</button>
-                        <button class="diag-cat-pill" data-cat="Hazm a'zolari">🥗 Oshqozon-ichak</button>
-                        <button class="diag-cat-pill" data-cat="Yurak-qon tomir">🫀 Yurak va Tomir</button>
-                        <button class="diag-cat-pill" data-cat="Nafas a'zolari">🫁 O'pka va Nafas</button>
-                        <button class="diag-cat-pill" data-cat="Buyrak va siydik">🧪 Buyrak va Peshob</button>
-                        <button class="diag-cat-pill" data-cat="Asab tizimi">🧠 Asab va Miya</button>
-                        <button class="diag-cat-pill" data-cat="Tayanch-harakat">🦴 Suyak va Bo'g'im</button>
-                        <button class="diag-cat-pill" data-cat="Endokrin tizim">🦋 Qand va Bezlar</button>
-                        <button class="diag-cat-pill" data-cat="LOR a'zolari">👂 LOR (Tomoq, Burun)</button>
-                        <button class="diag-cat-pill" data-cat="Yuqumli va virusli kasalliklar">🦠 OITS, Sil va Yuqumli</button>
-                        <button class="diag-cat-pill" data-cat="Boshqa">🩸 Qon, Ko'z, Teri</button>
-                    </div>
-                </div>
-
-                <!-- Quick Samples -->
-                <div class="diag-samples-row">
-                    <span class="samples-label"><i class="fas fa-bolt"></i> Tezkor namunalar:</span>
-                    <button class="diag-sample-chip" data-word="OITS">🦠 OITS (SPID)</button>
-                    <button class="diag-sample-chip" data-word="Sil">Sil (Tuberkulyoz)</button>
-                    <button class="diag-sample-chip" data-word="Surunkali gastrit">Surunkali gastrit</button>
-                    <button class="diag-sample-chip" data-word="Pnevmoniya">Zotiljam (Pnevmoniya)</button>
-                    <button class="diag-sample-chip" data-word="Arterial gipertoniya">Gipertoniya (Davleniya)</button>
-                    <button class="diag-sample-chip" data-word="Miokard infarkti">Miokard infarkti</button>
-                    <button class="diag-sample-chip" data-word="Qandli diabet">Qandli diabet</button>
-                    <button class="diag-sample-chip" data-word="Insult">Insult (ONMK)</button>
-                    <button class="diag-sample-chip" data-word="Piyelonefrit">Piyelonefrit</button>
-                    <button class="diag-sample-chip" data-word="Buyrak tosh kasalligi">Buyrak toshi (MKB)</button>
-                    <button class="diag-sample-chip" data-word="Botulizm">Botulizm</button>
-                    <button class="diag-sample-chip" data-word="Gaymorit">Gaymorit</button>
                 </div>
             </div>
 

@@ -14,15 +14,9 @@ Loyihani yaratishda faqat toza **HTML5**, **CSS3** va **Vanilla JavaScript** ish
    - Namunaviy tezkor retseptlar (Analgin, Amoksitsillin, Enalapril, Levomitsetin, Oksolin, Paratsetamol).
 
 2. 🩺 **Klinik Tashxis Tahlilchisi (Diagnosis Engine):**
-   - 100+ dan ortiq kasalliklar bazasi (Lotincha, O'zbekcha va Ruscha nomlari, tibbiy qisqartmalar).
-   - **OITS / SPID, Sil (Tuberkulyoz), COVID-19, Botulizm, Sifilis, Gelmintozlar, Pnevmoniya, Infarkt, Insult, Gipertoniya, Qandli diabet, Gaymorit** va b.
-   - Har bir tashxis uchun:
-     - 💡 *Bu nima degani? (Oddiy tildagi tushuntirish)*
-     - 🫀 *Zararlangan organ*
-     - ⚠️ *Asosiy belgilari va alomatlari*
-     - 🛡️ *Yuqish yo'llari va saqlanish (infeksiyalar uchun)*
-     - 👨‍⚕️ *Qaysi shifokor davolaydi*
-     - 💊 *Davolash usullari va tavsiyalar*
+   - 200+ dan ortiq kasalliklar bazasi (12 ta asosiy tibbiyot sohasini to'liq qamrab olgan: Yuqumli va parazitar, Yurak va qon-tomir, Nafas olish tizimi, Hazm qilish tizimi, Asab tizimi va ruhiyat, Endokrin tizim, Tayanch-harakat, Siydik-tanosil, Teri (Dermatologiya), Onkologiya, Ko'z va quloq, Qon tizimi).
+   - Har bir tashxis uchun Lotincha, O'zbekcha va Ruscha rasmiy nomlari, xalq tilidagi izohi, alomatlari, davolovchi shifokor, yuqish yo'llari va shoshilinchlik darajasi.
+   - Tezkor real-time qidiruv va tahlil.
 
 3. 📖 **Katta Tibbiy Lotin Tili Lug'ati:**
    - 400+ dan ortiq qisqartmalar, dori shakllari, anatomik tana a'zolari va kasallik qo'shimchalari.
@@ -38,9 +32,10 @@ Loyihani yaratishda faqat toza **HTML5**, **CSS3** va **Vanilla JavaScript** ish
 6. 🏆 **Interaktiv Viktorina / Test (Quiz):**
    - 8 ta sinov savollari orqali bilimni tekshirish va yakuniy ball hisoblash.
 
-7. 🎨 **Rich Aesthetics Dizayn:**
+7. 📱 **Android va Smartfonlarga To'liq Moslashuvchanlik (Mobile Responsive):**
+   - Android Chrome, Samsung Internet va boshqa mobil brauzerlar uchun maxsus moslashtirilgan.
+   - Mobil virtual klaviatura qidiruvi (`enterkeyhint="search"`), 48px+ sensorli tugmalar, teginish animatsiyalari.
    - Tungi (Dark) va Kunduzgi (Light) tibbiy rejim.
-   - Glassmorphism, yumshoq animatsiyalar, to'liq mobil moslashuvchanlik (Responsive).
 
 ---
 

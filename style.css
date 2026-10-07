@@ -2766,3 +2766,151 @@ pre, code {
         font-size: 0.76rem;
     }
 }
+
+/* ==========================================================================
+   ANDROID & MOBILE OPTIMIZATIONS
+   ========================================================================== */
+
+/* 1. Touch interactions & tap highlights */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button, 
+a, 
+input, 
+select, 
+textarea, 
+.nav-tab-btn, 
+.btn, 
+.diag-autocomplete-item {
+    touch-action: manipulation;
+}
+
+/* 2. Android touch feedback */
+@media (hover: none) and (pointer: coarse) {
+    button:active, 
+    .btn:active, 
+    .nav-tab-btn:active {
+        transform: scale(0.97);
+        transition: transform 0.1s ease;
+    }
+
+    .diag-autocomplete-item:active {
+        background: var(--secondary-light);
+    }
+}
+
+/* 3. Android keyboard & viewport adaptation */
+@media (max-width: 768px) {
+    .diag-input-wrapper {
+        padding: 16px 14px;
+        margin-bottom: 18px;
+    }
+
+    .diag-search-bar {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        position: relative;
+    }
+
+    .diag-search-icon-left {
+        top: 24px;
+        left: 14px;
+        transform: translateY(-50%);
+        font-size: 1rem;
+    }
+
+    .diag-input {
+        width: 100%;
+        min-height: 48px;
+        padding: 12px 14px 12px 42px;
+        font-size: 16px !important; /* Critical: stops Android Chrome/Firefox from zooming in */
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+    }
+
+    #analyze-diag-btn {
+        width: 100%;
+        min-height: 48px;
+        font-size: 1rem;
+        font-weight: 700;
+        justify-content: center;
+        border-radius: var(--radius-md);
+        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+    }
+
+    .diag-autocomplete-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        max-height: 260px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        z-index: 99;
+        margin-top: 6px;
+        border-radius: var(--radius-md);
+    }
+
+    .diag-autocomplete-item {
+        padding: 12px 14px;
+        min-height: 52px; /* Recommended Android touch target size */
+    }
+
+    /* Clinical Card mobile polish */
+    .clinical-card {
+        padding: 18px 14px;
+        margin-top: 16px;
+    }
+
+    .clinical-title-uz {
+        font-size: 1.25rem;
+        line-height: 1.35;
+        word-break: break-word;
+    }
+
+    .clinical-title-lat {
+        font-size: 0.95rem;
+        word-break: break-word;
+        margin: 6px 0;
+    }
+
+    .clinical-title-ru {
+        font-size: 0.85rem;
+        word-break: break-word;
+    }
+
+    .clinical-explain-lead {
+        padding: 14px;
+        margin: 14px 0;
+        border-radius: var(--radius-sm);
+    }
+
+    .clinical-explain-lead p {
+        font-size: 0.92rem;
+        line-height: 1.6;
+    }
+
+    .clinical-meta-box {
+        padding: 12px;
+        border-radius: var(--radius-sm);
+    }
+
+    .meta-label {
+        font-size: 0.76rem;
+    }
+
+    .meta-value {
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    /* Safe bottom padding for Android navigation bar / gesture pill */
+    body {
+        padding-bottom: max(20px, env(safe-area-inset-bottom, 20px));
+    }
+}
+
