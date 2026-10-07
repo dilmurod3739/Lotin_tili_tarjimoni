@@ -1,6 +1,6 @@
 {
   "name": "medlatin",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "MedLatin — Shifokorlar Lotin Tili va Retseptlar Portali",
   "main": "index.html",
   "scripts": {

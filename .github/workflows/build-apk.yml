@@ -77,21 +77,24 @@ jobs:
         uses: softprops/action-gh-release@v2
         continue-on-error: true
         with:
-          tag_name: v1.0.0
-          name: "MedLatin v1.0.0 (Android APK)"
+          tag_name: v1.1.0
+          name: "MedLatin v1.1.0 (Android APK - Yangi Ikonka va Dizayn)"
           draft: false
           prerelease: false
           make_latest: true
           body: |
-            ## 📱 MedLatin — Shifokorlar Lotin Tili Dasturi (Android APK)
+            ## 📱 MedLatin v1.1.0 — Yangilangan Android APK
 
-            Android smartfonlar uchun rasmiy **MedLatin.apk** o'rnatish fayli!
+            ✨ **Ushbu versiyadagi yangiliklar:**
+            - 🎨 Yangi jozibador 3D tibbiy ilova ikonkasi (Zumrad xoch va tilla rang Rx belgisi).
+            - 📱 Mobil ekranda ortiqcha yuqori panellar olib tashlandi, qulay pastki navigatsiya paneli sozlandi.
+            - 🩺 200+ klinik tashxislar va tezkor retseptlar tarjimoni.
+            - 📴 To'liq oflayn (internetsiz) ishlash imkoniyati.
 
             ### 📥 O'rnatish yo'riqnomasi:
             1. Quyidagi **MedLatin.apk** faylini yuklab oling.
-            2. Telefoningizda faylni ochib, **"O'rnatish" (Установить)** tugmasini bosing.
-            3. Agar brauzer yoki telefon ruxsat so'rasa, *"Noma'lum manbalardan o'rnatishga ruxsat berish"* bandini tasdiqlang.
-            4. Dastur to'liq oflayn (internetsiz) ham ishlaydi!
+            2. Telefoningizda ochib, **"O'rnatish" (Установить)** tugmasini bosing.
+            3. Agar ruxsat so'ralsa, *"Noma'lum manbalardan o'rnatish"*ni yoqing.
           files: release-output/MedLatin.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
