@@ -17,6 +17,7 @@ function initApp() {
     initPWA();
     initAndroidOptimizations();
     initAuth();
+    initWelcomeSplash();
 }
 
 /* ==========================================================================
@@ -1645,11 +1646,51 @@ function initAuth() {
             const activeSession = { name };
             localStorage.setItem('med_latin_user', JSON.stringify(activeSession));
 
-            triggerHaptic(25);
-            closeAuthModal();
-            loginForm.reset();
-            updateAuthUI();
-            showToast(`Xush kelibsiz, ${name}! Tizimga muvaffaqiyatli kirdingiz.`, 'success');
+            // Show login progress animation (10%, 40%, 70%, 100%)
+            const progressOverlay = document.getElementById('login-progress-overlay');
+            const welcomeTitle = document.getElementById('login-welcome-title');
+            const miniBar = document.getElementById('login-progress-bar');
+            const percentNum = document.getElementById('login-percent-num');
+            const stepText = document.getElementById('login-step-text');
+            const submitBtn = document.getElementById('login-submit-btn');
+
+            if (progressOverlay && miniBar && percentNum && stepText) {
+                if (submitBtn) submitBtn.style.display = 'none';
+                progressOverlay.style.display = 'block';
+                if (welcomeTitle) welcomeTitle.textContent = `Xush kelibsiz, ${name}!`;
+
+                const authMilestones = [
+                    { p: 10, text: "Hisob ma'lumotlari tekshirilmoqda...", delay: 80 },
+                    { p: 40, text: "Shaxsiy profil yuklanmoqda...", delay: 280 },
+                    { p: 70, text: "Retseptlar bazasi ulanmoqda...", delay: 550 },
+                    { p: 100, text: "Xush kelibsiz! Tizim tayyor.", delay: 850 }
+                ];
+
+                authMilestones.forEach(m => {
+                    setTimeout(() => {
+                        miniBar.style.width = `${m.p}%`;
+                        percentNum.textContent = `${m.p}%`;
+                        stepText.textContent = m.text;
+                        triggerHaptic(15);
+                    }, m.delay);
+                });
+
+                setTimeout(() => {
+                    triggerHaptic(30);
+                    closeAuthModal();
+                    if (submitBtn) submitBtn.style.display = 'inline-flex';
+                    progressOverlay.style.display = 'none';
+                    loginForm.reset();
+                    updateAuthUI();
+                    showToast(`Xush kelibsiz, ${name}! Tizimga muvaffaqiyatli kirdingiz.`, 'success');
+                }, 1200);
+            } else {
+                triggerHaptic(25);
+                closeAuthModal();
+                loginForm.reset();
+                updateAuthUI();
+                showToast(`Xush kelibsiz, ${name}! Tizimga muvaffaqiyatli kirdingiz.`, 'success');
+            }
         });
     }
 
@@ -1685,6 +1726,150 @@ function updateAuthUI() {
         if (openAuthBtn) openAuthBtn.style.display = 'inline-flex';
         if (profileBadge) profileBadge.style.display = 'none';
     }
+}
+
+/* ==========================================================================
+   11. XUSH KELIBSİZ — KIRISH ANIMATSIYASI (SPLASH & WELCOME ANIMATION)
+   ========================================================================== */
+function initWelcomeSplash() {
+    const splashScreen = document.getElementById('app-splash-screen');
+    const progressBar = document.getElementById('splash-progress-bar');
+    const percentText = document.getElementById('splash-percent-text');
+    const statusText = document.getElementById('splash-status-text');
+    const skipBtn = document.getElementById('splash-skip-btn');
+    const replayBtn = document.getElementById('replay-splash-btn');
+
+    if (!splashScreen) return;
+
+    let isSplashFinished = false;
+    let splashTimeouts = [];
+
+    function clearAllSplashTimers() {
+        splashTimeouts.forEach(t => clearTimeout(t));
+        splashTimeouts = [];
+    }
+
+    // Milestones configuration: 10%, 40%, 70%, 100%
+    const milestones = [
+        {
+            percent: 10,
+            delay: 350,
+            status: '<i class="fas fa-microchip"></i> Tizim sozlamalari yuklanmoqda... (10%)',
+            stepId: 'splash-step-10'
+        },
+        {
+            percent: 40,
+            delay: 900,
+            status: '<i class="fas fa-file-prescription"></i> Lotincha retseptlar va atamalar bazasi yuklanmoqda... (40%)',
+            stepId: 'splash-step-40'
+        },
+        {
+            percent: 70,
+            delay: 1500,
+            status: '<i class="fas fa-stethoscope"></i> Klinik tashxislar va audio talaffuz faollashmoqda... (70%)',
+            stepId: 'splash-step-70'
+        },
+        {
+            percent: 100,
+            delay: 2100,
+            status: '<i class="fas fa-check-circle" style="color: #34d399;"></i> Xush kelibsiz! MedLatin to\'liq tayyor. (100%)',
+            stepId: 'splash-step-100'
+        }
+    ];
+
+    function updateStepUI(targetPercent, statusHtml, stepId) {
+        if (progressBar) {
+            progressBar.style.width = `${targetPercent}%`;
+        }
+        if (percentText) {
+            percentText.textContent = `${targetPercent}%`;
+        }
+        if (statusText && statusHtml) {
+            statusText.innerHTML = statusHtml;
+        }
+        if (stepId) {
+            const pill = document.getElementById(stepId);
+            if (pill) {
+                pill.classList.add('active');
+            }
+        }
+    }
+
+    function runAnimation() {
+        isSplashFinished = false;
+        clearAllSplashTimers();
+
+        splashScreen.classList.remove('splash-exit');
+        splashScreen.style.display = 'flex';
+
+        // Reset indicators
+        ['splash-step-10', 'splash-step-40', 'splash-step-70', 'splash-step-100'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('active', 'done');
+        });
+        updateStepUI(0, '<i class="fas fa-spinner fa-spin"></i> Tizim ishga tushirilmoqda...', null);
+
+        milestones.forEach((m) => {
+            const timer = setTimeout(() => {
+                if (isSplashFinished) return;
+                updateStepUI(m.percent, m.status, m.stepId);
+                triggerHaptic(m.percent === 100 ? 30 : 15);
+            }, m.delay);
+            splashTimeouts.push(timer);
+        });
+
+        // Finish and exit after reaching 100%
+        const finishTimer = setTimeout(() => {
+            finishSplash();
+        }, 2650);
+        splashTimeouts.push(finishTimer);
+    }
+
+    function finishSplash() {
+        if (isSplashFinished) return;
+        isSplashFinished = true;
+        clearAllSplashTimers();
+
+        // Mark 100% immediately
+        updateStepUI(100, '<i class="fas fa-check-circle" style="color: #34d399;"></i> Xush kelibsiz! Dastur tayyor.', 'splash-step-100');
+        ['splash-step-10', 'splash-step-40', 'splash-step-70', 'splash-step-100'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('active');
+        });
+
+        // Trigger exit fade-out
+        setTimeout(() => {
+            splashScreen.classList.add('splash-exit');
+            triggerHaptic(25);
+            setTimeout(() => {
+                splashScreen.style.display = 'none';
+            }, 500);
+        }, 350);
+    }
+
+    if (skipBtn) {
+        skipBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            finishSplash();
+        });
+    }
+
+    // Clicking anywhere on splash screen allows instant skip
+    splashScreen.addEventListener('click', (e) => {
+        if (!e.target.closest('#splash-skip-btn')) {
+            finishSplash();
+        }
+    });
+
+    if (replayBtn) {
+        replayBtn.addEventListener('click', () => {
+            triggerHaptic(20);
+            runAnimation();
+        });
+    }
+
+    // Run automatically on load
+    runAnimation();
 }
 
 

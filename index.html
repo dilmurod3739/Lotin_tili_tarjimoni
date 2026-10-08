@@ -18,6 +18,69 @@
 </head>
 <body>
 
+    <!-- 🌟 Xush Kelibsiz Kirish Animatsiyasi (App Splash & Welcome Screen) -->
+    <div id="app-splash-screen" class="app-splash-screen" role="dialog" aria-modal="true" aria-label="Xush kelibsiz">
+        <div class="splash-backdrop-glow"></div>
+        <div class="splash-card">
+            <!-- 3D Brand Logo with Pulse Rings -->
+            <div class="splash-logo-container">
+                <div class="splash-pulse-wave wave-1"></div>
+                <div class="splash-pulse-wave wave-2"></div>
+                <div class="splash-logo-box">
+                    <img src="icon-192.png" alt="MedLatin Logo" class="splash-logo-img">
+                </div>
+            </div>
+
+            <!-- Welcome Tag & Title -->
+            <div class="splash-badge">
+                <i class="fas fa-heartbeat"></i> <span>MEDLATIN PORTALI</span>
+            </div>
+            <h1 class="splash-welcome-title">Xush kelibsiz!</h1>
+            <p class="splash-welcome-desc">Shifokorlar Lotin Tili va Retseptlar Portali</p>
+
+            <!-- Loading Progress Section (10%, 40%, 70%, 100%) -->
+            <div class="splash-progress-card">
+                <div class="splash-progress-header">
+                    <span id="splash-status-text" class="splash-status-text">
+                        <i class="fas fa-spinner fa-spin"></i> Tizim tayyorlanmoqda...
+                    </span>
+                    <span id="splash-percent-text" class="splash-percent-text">0%</span>
+                </div>
+
+                <div class="splash-progress-track">
+                    <div id="splash-progress-bar" class="splash-progress-bar" style="width: 0%;">
+                        <div class="splash-bar-glow"></div>
+                    </div>
+                </div>
+
+                <!-- Step Milestones -->
+                <div class="splash-milestones">
+                    <div class="splash-step-item" id="splash-step-10">
+                        <span class="step-num">10%</span>
+                        <span class="step-label">Tizim</span>
+                    </div>
+                    <div class="splash-step-item" id="splash-step-40">
+                        <span class="step-num">40%</span>
+                        <span class="step-label">Retseptlar</span>
+                    </div>
+                    <div class="splash-step-item" id="splash-step-70">
+                        <span class="step-num">70%</span>
+                        <span class="step-label">Tashxislar</span>
+                    </div>
+                    <div class="splash-step-item" id="splash-step-100">
+                        <span class="step-num">100%</span>
+                        <span class="step-label">Tayyor</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fast Skip Button -->
+            <button type="button" id="splash-skip-btn" class="splash-skip-btn" title="Kutmasdan kirish">
+                <span>O'tkazib yuborish</span> <i class="fas fa-angle-double-right"></i>
+            </button>
+        </div>
+    </div>
+
     <!-- Site Header -->
     <header class="site-header">
         <div class="container header-inner">
@@ -33,6 +96,9 @@
             <div class="header-actions">
                 <button class="install-pwa-btn" id="install-pwa-btn" title="Android ilova sifatida o'rnatish" style="display: none;">
                     <i class="fas fa-mobile-alt"></i> <span>O'rnatish</span>
+                </button>
+                <button class="splash-replay-btn" id="replay-splash-btn" title="Kirish animatsiyasini qayta ko'rish" aria-label="Kirish animatsiyasi">
+                    <i class="fas fa-sparkles"></i>
                 </button>
                 <div id="auth-header-slot" class="auth-header-slot">
                     <button class="auth-btn" id="open-auth-btn" title="Kirish / Ro'yxatdan o'tish">
@@ -342,7 +408,26 @@
 
                     <div id="login-error-box" class="auth-error-box" style="display: none;"></div>
 
-                    <button type="submit" class="btn btn-primary auth-submit-btn">
+                    <div id="login-progress-overlay" class="login-progress-overlay" style="display: none;">
+                        <div class="login-progress-card">
+                            <div class="login-progress-icon-wrap">
+                                <i class="fas fa-heartbeat animated-heartbeat"></i>
+                            </div>
+                            <h4 id="login-welcome-title" class="login-welcome-title">Xush kelibsiz!</h4>
+                            <p id="login-progress-sub" class="login-progress-sub">Hisobingizga kirilmoqda...</p>
+                            
+                            <div class="splash-progress-track login-mini-track">
+                                <div id="login-progress-bar" class="splash-progress-bar" style="width: 0%;"></div>
+                            </div>
+                            
+                            <div class="login-percent-row">
+                                <span id="login-step-text" class="login-step-text">Tekshirilmoqda...</span>
+                                <span id="login-percent-num" class="login-percent-num">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary auth-submit-btn" id="login-submit-btn">
                         <i class="fas fa-sign-in-alt"></i> Kirish
                     </button>
                 </form>

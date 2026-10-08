@@ -16,6 +16,7 @@ izohlab berish uchun maxsus yaratilgan.
 - Lotin Alifbosi va Talaffuz Qoidalari (Audio tinglash imkoniyati bilan)
 - Bilimni Sinash Uchun Interaktiv Viktorina / Test (Quiz)
 - Tungi (Dark) va Kunduzgi (Light) zamonaviy tibbiy rejim
+- "Xush kelibsiz" Kirish Animatsiyasi (10%, 40%, 70%, 100% bosqichli yuklanish)
 
 3. FAYLLAR TUZILISHI:
 - index.html   -> Asosiy boshlang'ich sahifa (To'g'ridan-to'g'ri brauzerda ochiladi)

@@ -62,6 +62,13 @@ Android telefoningizga o'rnatish uchun tayyor **`MedLatin.apk`** fayli:
    - **Parol xavfsizligi:** Parolni ko'rsatish/yashirish ko'z belgisi (👁️) va xatolar nazorati.
    - **Sessiyani eslab qolish:** `localStorage` orqali foydalanuvchi ma'lumotlari saqlanadi, sahifa yangilanganda ham hisob faol qoladi hamda istalgan payt bitta bosishda chiqish (Logout) mumkin.
 
+9. 🌟 **"Xush kelibsiz" Kirish Animatsiyasi (Splash & Progress Bar):**
+   - **3D Logo va Pulsatsiya:** MedLatin 3D nishoni va yorug'lik to'lqinlari bilan jozibador ko'rinish.
+   - **Bosqichli Progress (10% -> 40% -> 70% -> 100%):** Tizim, retseptlar, klinik tashxislar va tayyorlik darajasini ketma-ket to'ldirib boruvchi zamonaviy progress bar.
+   - **Qayta ko'rish imkoniyati:** Yuqori menyudagi "Kirish animatsiyasi" (✨) tugmasi orqali istalgan payt animatsiyani qayta tomosha qilish.
+   - **Tezkor kirish (O'tkazib yuborish):** Shoshilinch hollarda bitta bosishda animatsiyani o'tkazib yuborish.
+
+
 ---
 
 ## 🚀 Ishga Tushirish

@@ -82,19 +82,20 @@ jobs:
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.3.0
-          name: "MedLatin v1.3.0 (Android APK - Yangilangan Ikonka)"
+          tag_name: v1.4.0
+          name: "MedLatin v1.4.0 (Yangi Kirish Animatsiyasi & APK)"
           draft: false
           prerelease: false
           make_latest: true
           body: |
-            ## 📱 MedLatin v1.3.0 — Yangilangan Rasmiy Android APK
+            ## 📱 MedLatin v1.4.0 — Yangilangan Rasmiy Android APK
 
             ✨ **Ushbu versiyadagi yangiliklar:**
-            - 🎨 **Yangi 3D Tibbiy Ilova Ikonkasi:** Telefoningiz ekranida zumrad-yashil va tilla rang Rx belgili jozibador 3D ikonka bilan o'rnatiladi.
-            - 🚀 **Android Splash Screen:** Ilova ochilganda maxsus qora-zumrad fonli yuklanish ekrani.
-            - 📱 **Qulay Mobil Navigatsiya:** Ortiqcha panellarsiz qulay pastki menyu.
+            - 🌟 **Yangi "Xush kelibsiz" Kirish Animatsiyasi:** Dasturga kirganda 10%, 40%, 70%, 100% bosqichli to'lish va tibbiy pulsatsiya animatsiyasi bilan kirish ekrani.
+            - 🔐 **Kirish Bo'limi Animatsiyasi:** Tizimga kirishda ham shaxsiy profilni yuklovchi silliq progress animatsiyasi.
+            - 🎨 **3D Tibbiy Ilova Ikonkasi va Splash:** Telefoningiz ekranida zumrad-yashil va tilla rang Rx belgili jozibador 3D ikonka.
             - 🩺 **200+ Klinik Tashxislar va Retseptlar Dekoderi:** To'liq oflayn (internetsiz) ishlaydi.
+            - ⚡ **Tezkor yuklanish va optimallashtirilgan ishlash.**
 
             ### 📥 O'rnatish yo'riqnomasi:
             1. Quyidagi **MedLatin.apk** faylini yuklab oling.
