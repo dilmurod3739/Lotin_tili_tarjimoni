@@ -33,6 +33,15 @@ jobs:
         with:
           packages: 'platforms;android-34 build-tools;34.0.0'
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python Dependencies
+        run: |
+          pip install pillow
+
       - name: Prepare Assets & Initialize Capacitor
         run: |
           mkdir -p www
@@ -42,39 +51,19 @@ jobs:
           npx cap add android
           npx cap sync android
 
-      - name: Generate Official Android Icons & Splash
+      - name: Generate Capacitor Base Assets
         run: |
-          npx @capacitor/assets generate --android || true
+          npx @capacitor/assets generate --android --assetPath assets --iconBackgroundColor '#0f172a' --splashBackgroundColor '#0f172a' || true
 
-      - name: Force Custom App Launcher Icons & Overwrite Defaults
+      - name: Configure Custom Android Launcher Icons & Adaptive Icons
         run: |
-          # 1. Overwrite all mipmap PNG launcher icons
-          for dir in android/app/src/main/res/mipmap-*; do
-            if [ -d "$dir" ]; then
-              cp icon-512.png "$dir/ic_launcher.png" 2>/dev/null || true
-              cp icon-512.png "$dir/ic_launcher_round.png" 2>/dev/null || true
-              cp assets/icon-foreground.png "$dir/ic_launcher_foreground.png" 2>/dev/null || true
-            fi
-          done
-
-          # 2. Delete default vector foregrounds that might override PNGs
-          find android/app/src/main/res -name "ic_launcher_foreground.xml" -delete 2>/dev/null || true
-
-          # 3. Overwrite background with custom dark color
-          cat << 'EOF' > android/app/src/main/res/values/ic_launcher_background.xml
-          <?xml version="1.0" encoding="utf-8"?>
-          <resources>
-              <color name="ic_launcher_background">#0f172a</color>
-          </resources>
-          EOF
-
-          echo "Android App Launcher Icons successfully set and verified!"
+          python3 scripts/generate_android_icons.py
 
       - name: Build Android Debug APK
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --stacktrace
 
       - name: Copy & Rename APK
         run: |
@@ -92,20 +81,19 @@ jobs:
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
-        continue-on-error: true
         with:
-          tag_name: v1.2.2
-          name: "MedLatin v1.2.2 (Android APK)"
+          tag_name: v1.3.0
+          name: "MedLatin v1.3.0 (Android APK - Yangilangan Ikonka)"
           draft: false
           prerelease: false
           make_latest: true
           body: |
-            ## 📱 MedLatin v1.2.0 — Yangilangan Rasmiy Android APK
+            ## 📱 MedLatin v1.3.0 — Yangilangan Rasmiy Android APK
 
             ✨ **Ushbu versiyadagi yangiliklar:**
             - 🎨 **Yangi 3D Tibbiy Ilova Ikonkasi:** Telefoningiz ekranida zumrad-yashil va tilla rang Rx belgili jozibador 3D ikonka bilan o'rnatiladi.
             - 🚀 **Android Splash Screen:** Ilova ochilganda maxsus qora-zumrad fonli yuklanish ekrani.
-            - 📱 **Qulay Mobil Navigatsiya:** Ortiqcha yuqori panellarsiz, qulay pastki mobil menyu.
+            - 📱 **Qulay Mobil Navigatsiya:** Ortiqcha panellarsiz qulay pastki menyu.
             - 🩺 **200+ Klinik Tashxislar va Retseptlar Dekoderi:** To'liq oflayn (internetsiz) ishlaydi.
 
             ### 📥 O'rnatish yo'riqnomasi:
