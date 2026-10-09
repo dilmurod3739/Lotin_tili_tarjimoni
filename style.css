@@ -3749,13 +3749,56 @@ body {
     line-height: 1.4;
 }
 
+/* Medical ECG Wave Container */
+.splash-ecg-container {
+    width: 100%;
+    height: 42px;
+    margin: 6px 0 16px 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.splash-ecg-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.splash-ecg-base {
+    stroke: rgba(16, 185, 129, 0.16);
+    stroke-width: 2;
+    fill: none;
+}
+
+.splash-ecg-active {
+    stroke: #10b981;
+    stroke-width: 2.5;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 65, 260;
+    animation: ecgSweep 1.6s ease-in-out infinite;
+    filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.9));
+}
+
+@keyframes ecgSweep {
+    0% {
+        stroke-dashoffset: 260;
+    }
+    100% {
+        stroke-dashoffset: -260;
+    }
+}
+
 /* Progress Card */
 .splash-progress-card {
-    background: rgba(10, 15, 28, 0.8);
+    background: rgba(10, 15, 28, 0.82);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 18px;
-    padding: 18px 16px;
-    margin-bottom: 18px;
+    border-radius: 16px;
+    padding: 14px 16px 16px;
+    margin-bottom: 4px;
     text-align: left;
     box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
 }
@@ -3764,7 +3807,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     font-size: 13px;
 }
 
@@ -3777,7 +3820,7 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 250px;
+    max-width: 260px;
 }
 
 .splash-status-text i {
@@ -3786,11 +3829,11 @@ body {
 
 .splash-percent-text {
     font-family: var(--font-code);
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 800;
     color: #38bdf8;
     text-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
-    min-width: 50px;
+    min-width: 45px;
     text-align: right;
 }
 
@@ -3798,7 +3841,7 @@ body {
 .splash-progress-track {
     position: relative;
     width: 100%;
-    height: 12px;
+    height: 10px;
     background: rgba(255, 255, 255, 0.08);
     border-radius: 999px;
     overflow: hidden;
@@ -3811,7 +3854,7 @@ body {
     width: 0%;
     background: linear-gradient(90deg, #10b981 0%, #06b6d4 55%, #3b82f6 100%);
     border-radius: 999px;
-    transition: width 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: width 0.15s ease-out;
     box-shadow: 0 0 16px rgba(16, 185, 129, 0.6);
 }
 
@@ -3825,109 +3868,6 @@ body {
 @keyframes splashShimmer {
     0% { transform: translateX(-100%); }
     100% { transform: translateX(100%); }
-}
-
-/* Milestones Row */
-.splash-milestones {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-    margin-top: 14px;
-}
-
-.splash-step-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 10px;
-    padding: 7px 4px;
-    transition: all 0.3s ease;
-    opacity: 0.65;
-}
-
-.splash-step-item .step-num {
-    font-family: var(--font-code);
-    font-size: 12px;
-    font-weight: 700;
-    color: #94a3b8;
-}
-
-.splash-step-item .step-label {
-    font-size: 10px;
-    color: #64748b;
-    margin-top: 2px;
-}
-
-.splash-step-item.active {
-    background: rgba(16, 185, 129, 0.16);
-    border-color: rgba(16, 185, 129, 0.45);
-    opacity: 1;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
-}
-
-.splash-step-item.active .step-num {
-    color: #34d399;
-}
-
-.splash-step-item.active .step-label {
-    color: #a7f3d0;
-}
-
-.splash-step-item.done {
-    background: rgba(14, 165, 233, 0.16);
-    border-color: rgba(14, 165, 233, 0.4);
-}
-
-.splash-step-item.done .step-num {
-    color: #38bdf8;
-}
-
-/* Skip Button */
-.splash-skip-btn {
-    background: transparent;
-    border: none;
-    color: #64748b;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border-radius: 8px;
-    transition: var(--transition-smooth);
-}
-
-.splash-skip-btn:hover {
-    color: #f8fafc;
-    background: rgba(255, 255, 255, 0.06);
-}
-
-/* Header Replay Button */
-.splash-replay-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #34d399;
-    font-size: 16px;
-    cursor: pointer;
-    transition: var(--transition-smooth);
-}
-
-.splash-replay-btn:hover {
-    background: rgba(16, 185, 129, 0.18);
-    border-color: rgba(16, 185, 129, 0.4);
-    transform: rotate(15deg) scale(1.05);
-    box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
 }
 
 /* Login Modal Progress Overlay */
@@ -4034,13 +3974,8 @@ body {
     color: #334155;
 }
 
-[data-theme="light"] .splash-step-item {
-    background: rgba(0, 0, 0, 0.03);
-    border-color: rgba(0, 0, 0, 0.06);
-}
-
-[data-theme="light"] .splash-step-item .step-num {
-    color: #475569;
+[data-theme="light"] .splash-ecg-base {
+    stroke: rgba(13, 148, 136, 0.2);
 }
 
 [data-theme="light"] .login-progress-overlay {

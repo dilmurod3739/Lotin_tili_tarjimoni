@@ -1729,147 +1729,77 @@ function updateAuthUI() {
 }
 
 /* ==========================================================================
-   11. XUSH KELIBSİZ — KIRISH ANIMATSIYASI (SPLASH & WELCOME ANIMATION)
+   11. XUSH KELIBSİZ — ZAMONAVIY TIBBIY KIRISH ANIMATSIYASI (SPLASH SCREEN)
    ========================================================================== */
 function initWelcomeSplash() {
     const splashScreen = document.getElementById('app-splash-screen');
     const progressBar = document.getElementById('splash-progress-bar');
     const percentText = document.getElementById('splash-percent-text');
     const statusText = document.getElementById('splash-status-text');
-    const skipBtn = document.getElementById('splash-skip-btn');
-    const replayBtn = document.getElementById('replay-splash-btn');
 
     if (!splashScreen) return;
 
     let isSplashFinished = false;
-    let splashTimeouts = [];
-
-    function clearAllSplashTimers() {
-        splashTimeouts.forEach(t => clearTimeout(t));
-        splashTimeouts = [];
-    }
-
-    // Milestones configuration: 10%, 40%, 70%, 100%
-    const milestones = [
-        {
-            percent: 10,
-            delay: 350,
-            status: '<i class="fas fa-microchip"></i> Tizim sozlamalari yuklanmoqda... (10%)',
-            stepId: 'splash-step-10'
-        },
-        {
-            percent: 40,
-            delay: 900,
-            status: '<i class="fas fa-file-prescription"></i> Lotincha retseptlar va atamalar bazasi yuklanmoqda... (40%)',
-            stepId: 'splash-step-40'
-        },
-        {
-            percent: 70,
-            delay: 1500,
-            status: '<i class="fas fa-stethoscope"></i> Klinik tashxislar va audio talaffuz faollashmoqda... (70%)',
-            stepId: 'splash-step-70'
-        },
-        {
-            percent: 100,
-            delay: 2100,
-            status: '<i class="fas fa-check-circle" style="color: #34d399;"></i> Xush kelibsiz! MedLatin to\'liq tayyor. (100%)',
-            stepId: 'splash-step-100'
-        }
-    ];
-
-    function updateStepUI(targetPercent, statusHtml, stepId) {
-        if (progressBar) {
-            progressBar.style.width = `${targetPercent}%`;
-        }
-        if (percentText) {
-            percentText.textContent = `${targetPercent}%`;
-        }
-        if (statusText && statusHtml) {
-            statusText.innerHTML = statusHtml;
-        }
-        if (stepId) {
-            const pill = document.getElementById(stepId);
-            if (pill) {
-                pill.classList.add('active');
-            }
-        }
-    }
-
-    function runAnimation() {
-        isSplashFinished = false;
-        clearAllSplashTimers();
-
-        splashScreen.classList.remove('splash-exit');
-        splashScreen.style.display = 'flex';
-
-        // Reset indicators
-        ['splash-step-10', 'splash-step-40', 'splash-step-70', 'splash-step-100'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.classList.remove('active', 'done');
-        });
-        updateStepUI(0, '<i class="fas fa-spinner fa-spin"></i> Tizim ishga tushirilmoqda...', null);
-
-        milestones.forEach((m) => {
-            const timer = setTimeout(() => {
-                if (isSplashFinished) return;
-                updateStepUI(m.percent, m.status, m.stepId);
-                triggerHaptic(m.percent === 100 ? 30 : 15);
-            }, m.delay);
-            splashTimeouts.push(timer);
-        });
-
-        // Finish and exit after reaching 100%
-        const finishTimer = setTimeout(() => {
-            finishSplash();
-        }, 2650);
-        splashTimeouts.push(finishTimer);
-    }
+    let animFrameId = null;
 
     function finishSplash() {
         if (isSplashFinished) return;
         isSplashFinished = true;
-        clearAllSplashTimers();
+        if (animFrameId) cancelAnimationFrame(animFrameId);
 
-        // Mark 100% immediately
-        updateStepUI(100, '<i class="fas fa-check-circle" style="color: #34d399;"></i> Xush kelibsiz! Dastur tayyor.', 'splash-step-100');
-        ['splash-step-10', 'splash-step-40', 'splash-step-70', 'splash-step-100'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.classList.add('active');
-        });
+        if (progressBar) progressBar.style.width = '100%';
+        if (percentText) percentText.textContent = '100%';
+        if (statusText) statusText.innerHTML = '<i class="fas fa-check-circle" style="color: #34d399;"></i> Xush kelibsiz! MedLatin tayyor.';
 
-        // Trigger exit fade-out
+        triggerHaptic(25);
+
         setTimeout(() => {
             splashScreen.classList.add('splash-exit');
-            triggerHaptic(25);
             setTimeout(() => {
                 splashScreen.style.display = 'none';
-            }, 500);
-        }, 350);
+            }, 450);
+        }, 280);
     }
 
-    if (skipBtn) {
-        skipBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            finishSplash();
-        });
-    }
+    const startTime = performance.now();
+    const duration = 1400; // 1.4 soniya silliq va tezkor to'lish
 
-    // Clicking anywhere on splash screen allows instant skip
-    splashScreen.addEventListener('click', (e) => {
-        if (!e.target.closest('#splash-skip-btn')) {
+    function animateProgress(now) {
+        if (isSplashFinished) return;
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Silliq kubik harakat
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const percent = Math.round(ease * 100);
+
+        if (progressBar) progressBar.style.width = `${percent}%`;
+        if (percentText) percentText.textContent = `${percent}%`;
+
+        if (statusText) {
+            if (percent < 35) {
+                statusText.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Tibbiy tizim sozlanmoqda...';
+            } else if (percent < 75) {
+                statusText.innerHTML = '<i class="fas fa-file-prescription"></i> Retseptlar bazasi yuklanmoqda...';
+            } else if (percent < 100) {
+                statusText.innerHTML = '<i class="fas fa-stethoscope"></i> Klinik tashxislar tayyorlanmoqda...';
+            } else {
+                statusText.innerHTML = '<i class="fas fa-check-circle" style="color: #34d399;"></i> Xush kelibsiz!';
+            }
+        }
+
+        if (progress < 1) {
+            animFrameId = requestAnimationFrame(animateProgress);
+        } else {
             finishSplash();
         }
-    });
-
-    if (replayBtn) {
-        replayBtn.addEventListener('click', () => {
-            triggerHaptic(20);
-            runAnimation();
-        });
     }
 
-    // Run automatically on load
-    runAnimation();
+    animFrameId = requestAnimationFrame(animateProgress);
+
+    // Ekranni bosish orqali darhol kirish
+    splashScreen.addEventListener('click', () => {
+        finishSplash();
+    });
 }
 
 

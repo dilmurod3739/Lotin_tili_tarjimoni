@@ -2,7 +2,7 @@
  * MedLatin Service Worker for Android PWA & Offline Support
  */
 
-const CACHE_NAME = 'medlatin-v1.4';
+const CACHE_NAME = 'medlatin-v1.5';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',

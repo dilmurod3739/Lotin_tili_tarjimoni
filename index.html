@@ -16,9 +16,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <!-- 🌟 Xush Kelibsiz Kirish Animatsiyasi (App Splash & Welcome Screen) -->
+    <!-- 🌟 Zamonaviy Tibbiy Kirish Animatsiyasi (Medical Pulse Splash Screen) -->
     <div id="app-splash-screen" class="app-splash-screen" role="dialog" aria-modal="true" aria-label="Xush kelibsiz">
         <div class="splash-backdrop-glow"></div>
         <div class="splash-card">
@@ -38,11 +39,19 @@
             <h1 class="splash-welcome-title">Xush kelibsiz!</h1>
             <p class="splash-welcome-desc">Shifokorlar Lotin Tili va Retseptlar Portali</p>
 
-            <!-- Loading Progress Section (10%, 40%, 70%, 100%) -->
+            <!-- Medical ECG Cardiogram Pulse Wave -->
+            <div class="splash-ecg-container">
+                <svg class="splash-ecg-svg" viewBox="0 0 260 40" preserveAspectRatio="none">
+                    <path class="splash-ecg-base" d="M0,20 L55,20 L65,8 L75,32 L85,20 L95,20 L102,6 L112,34 L120,20 L180,20 L190,9 L200,31 L208,20 L260,20" />
+                    <path class="splash-ecg-active" d="M0,20 L55,20 L65,8 L75,32 L85,20 L95,20 L102,6 L112,34 L120,20 L180,20 L190,9 L200,31 L208,20 L260,20" />
+                </svg>
+            </div>
+
+            <!-- Loading Progress Section (Sleek Modern Medical Bar) -->
             <div class="splash-progress-card">
                 <div class="splash-progress-header">
                     <span id="splash-status-text" class="splash-status-text">
-                        <i class="fas fa-spinner fa-spin"></i> Tizim tayyorlanmoqda...
+                        <i class="fas fa-circle-notch fa-spin"></i> Tizim sozlanmoqda...
                     </span>
                     <span id="splash-percent-text" class="splash-percent-text">0%</span>
                 </div>
@@ -52,32 +61,7 @@
                         <div class="splash-bar-glow"></div>
                     </div>
                 </div>
-
-                <!-- Step Milestones -->
-                <div class="splash-milestones">
-                    <div class="splash-step-item" id="splash-step-10">
-                        <span class="step-num">10%</span>
-                        <span class="step-label">Tizim</span>
-                    </div>
-                    <div class="splash-step-item" id="splash-step-40">
-                        <span class="step-num">40%</span>
-                        <span class="step-label">Retseptlar</span>
-                    </div>
-                    <div class="splash-step-item" id="splash-step-70">
-                        <span class="step-num">70%</span>
-                        <span class="step-label">Tashxislar</span>
-                    </div>
-                    <div class="splash-step-item" id="splash-step-100">
-                        <span class="step-num">100%</span>
-                        <span class="step-label">Tayyor</span>
-                    </div>
-                </div>
             </div>
-
-            <!-- Fast Skip Button -->
-            <button type="button" id="splash-skip-btn" class="splash-skip-btn" title="Kutmasdan kirish">
-                <span>O'tkazib yuborish</span> <i class="fas fa-angle-double-right"></i>
-            </button>
         </div>
     </div>
 
@@ -96,9 +80,6 @@
             <div class="header-actions">
                 <button class="install-pwa-btn" id="install-pwa-btn" title="Android ilova sifatida o'rnatish" style="display: none;">
                     <i class="fas fa-mobile-alt"></i> <span>O'rnatish</span>
-                </button>
-                <button class="splash-replay-btn" id="replay-splash-btn" title="Kirish animatsiyasini qayta ko'rish" aria-label="Kirish animatsiyasi">
-                    <i class="fas fa-sparkles"></i>
                 </button>
                 <div id="auth-header-slot" class="auth-header-slot">
                     <button class="auth-btn" id="open-auth-btn" title="Kirish / Ro'yxatdan o'tish">
