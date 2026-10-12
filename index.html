@@ -65,6 +65,140 @@
         </div>
     </div>
 
+    <!-- 🔐 Face ID & 4 Xonali PIN Kod Xavfsizlik va Kirish Ekrani -->
+    <div id="app-security-screen" class="app-security-screen" role="dialog" aria-modal="true" style="display: none;">
+        <div class="security-backdrop"></div>
+        <div class="security-card animated-fade-in" id="security-card">
+            
+            <!-- Security Header -->
+            <div class="security-header">
+                <div class="security-logo-wrap">
+                    <img src="icon-192.png" alt="MedLatin" class="security-logo-img">
+                </div>
+                <div class="security-title-wrap">
+                    <h2 class="security-app-title">MedLatin Xavfsizlik</h2>
+                    <span class="security-sub-badge"><i class="fas fa-shield-alt"></i> Biometrik Shifokor Himoyasi</span>
+                </div>
+            </div>
+
+            <!-- Mode Selector Tabs (Face ID / 4 Xonali PIN) -->
+            <div class="sec-mode-tabs" id="sec-mode-tabs">
+                <button type="button" class="sec-tab-btn active" id="sec-tab-face" data-mode="face">
+                    <i class="fas fa-camera"></i> <span>Face ID</span>
+                </button>
+                <button type="button" class="sec-tab-btn" id="sec-tab-pin" data-mode="pin">
+                    <i class="fas fa-th"></i> <span>4 Xonali PIN</span>
+                </button>
+            </div>
+
+            <!-- TAB 1: Face ID Scanner -->
+            <div class="sec-mode-panel active" id="sec-panel-face">
+                <div class="face-scanner-stage">
+                    <div class="face-scanner-glow-ring"></div>
+                    <div class="face-scanner-corner top-left"></div>
+                    <div class="face-scanner-corner top-right"></div>
+                    <div class="face-scanner-corner bottom-left"></div>
+                    <div class="face-scanner-corner bottom-right"></div>
+
+                    <!-- Video & Face Viewport -->
+                    <div class="face-scanner-frame" id="face-scanner-frame">
+                        <video id="face-video" class="face-video-stream" autoplay playsinline muted></video>
+                        <canvas id="face-canvas" class="face-canvas-hidden" style="display: none;"></canvas>
+                        
+                        <!-- Biometric Laser Scanning Line -->
+                        <div class="face-laser-line" id="face-laser-line"></div>
+
+                        <!-- Face Target Reticle Overlay -->
+                        <div class="face-reticle-overlay">
+                            <div class="reticle-oval"></div>
+                            <div class="reticle-axis-h"></div>
+                            <div class="reticle-axis-v"></div>
+                        </div>
+
+                        <!-- Camera Loading Placeholder -->
+                        <div class="face-cam-placeholder" id="face-cam-placeholder">
+                            <i class="fas fa-camera"></i>
+                            <p>Kamera ochilmoqda...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Banner -->
+                <div class="face-status-box" id="face-status-box">
+                    <div class="face-status-icon" id="face-status-icon">
+                        <i class="fas fa-circle-notch fa-spin"></i>
+                    </div>
+                    <div class="face-status-content">
+                        <div class="face-status-title" id="face-status-title">Yuz aniqlanmoqda...</div>
+                        <div class="face-status-sub" id="face-status-sub">Yuzingizni kameraning o'rtasiga qarating</div>
+                    </div>
+                </div>
+
+                <!-- Face ID Registration Action (Agar yuz hali saqlanmagan bo'lsa) -->
+                <div class="face-register-box" id="face-register-box" style="display: none;">
+                    <p class="face-reg-tip"><i class="fas fa-info-circle"></i> Yuzingizni 1 marta skanerlab saqlang. Tizim faqat sizning yuzingizga ochiladi, boshqa yuzlarni mutlaqo tanimaydi.</p>
+                    <button type="button" class="btn btn-primary btn-block" id="btn-register-face">
+                        <i class="fas fa-user-check"></i> Yuzni Bir Marta Skanerlash va Saqlash
+                    </button>
+                </div>
+
+                <!-- Fallback Switch to PIN -->
+                <div class="sec-alt-switch">
+                    <button type="button" class="sec-link-btn" id="btn-switch-to-pin">
+                        <i class="fas fa-key"></i> 4 xonali PIN kod orqali kirish
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB 2: 4-Digit PIN Keypad -->
+            <div class="sec-mode-panel" id="sec-panel-pin" style="display: none;">
+                <div class="pin-panel-head">
+                    <h3 id="pin-prompt-title">4 xonali PIN kodni kiriting</h3>
+                    <p id="pin-prompt-sub">Shaxsiy 4 ta raqamli xavfsizlik kodingiz</p>
+                </div>
+
+                <!-- 4 Digits Dots Display -->
+                <div class="pin-dots-row" id="pin-dots-row">
+                    <div class="pin-circle" data-idx="0"></div>
+                    <div class="pin-circle" data-idx="1"></div>
+                    <div class="pin-circle" data-idx="2"></div>
+                    <div class="pin-circle" data-idx="3"></div>
+                </div>
+
+                <!-- PIN Error Notice -->
+                <div class="pin-alert-notice" id="pin-alert-notice" style="display: none;"></div>
+
+                <!-- Numeric 0-9 Keypad -->
+                <div class="pin-pad-grid" id="pin-pad-grid">
+                    <button type="button" class="pin-pad-btn" data-key="1"><span class="k-num">1</span></button>
+                    <button type="button" class="pin-pad-btn" data-key="2"><span class="k-num">2</span><span class="k-sub">ABC</span></button>
+                    <button type="button" class="pin-pad-btn" data-key="3"><span class="k-num">3</span><span class="k-sub">DEF</span></button>
+                    <button type="button" class="pin-pad-btn" data-key="4"><span class="k-num">4</span><span class="k-sub">GHI</span></button>
+                    <button type="button" class="pin-pad-btn" data-key="5"><span class="k-num">5</span><span class="k-sub">JKL</span></button>
+                    <button type="button" class="pin-pad-btn" data-key="6"><span class="k-num">6</span><span class="k-sub">MNO</span></button>
+                    <button type="button" class="pin-pad-btn" data-key="7"><span class="k-num">7</span><span class="k-sub">PQRS</span></button>
+                    <button type="button" class="pin-pad-btn" data-key="8"><span class="k-num">8</span><span class="k-sub">TUV</span></button>
+                    <button type="button" class="pin-pad-btn" data-key="9"><span class="k-num">9</span><span class="k-sub">WXYZ</span></button>
+                    <button type="button" class="pin-pad-btn pin-func-btn" id="pin-pad-switch-face" title="Face ID ga o'tish">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                    <button type="button" class="pin-pad-btn" data-key="0"><span class="k-num">0</span></button>
+                    <button type="button" class="pin-pad-btn pin-func-btn" id="pin-pad-del" title="O'chirish">
+                        <i class="fas fa-backspace"></i>
+                    </button>
+                </div>
+
+                <!-- PIN Setup Actions (if new PIN is being set) -->
+                <div class="pin-setup-actions" id="pin-setup-actions" style="display: none;">
+                    <button type="button" class="btn btn-outline btn-sm" id="btn-cancel-pin-setup">
+                        <i class="fas fa-undo"></i> Boshidan kiritish
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <!-- Site Header -->
     <header class="site-header">
         <div class="container header-inner">
@@ -81,13 +215,23 @@
                 <button class="install-pwa-btn" id="install-pwa-btn" title="Android ilova sifatida o'rnatish" style="display: none;">
                     <i class="fas fa-mobile-alt"></i> <span>O'rnatish</span>
                 </button>
+                <button class="header-lock-quick-btn" id="header-lock-quick-btn" title="Dasturni qulflash (Face ID / PIN)" aria-label="Dasturni qulflash">
+                    <i class="fas fa-shield-alt"></i>
+                </button>
                 <div id="auth-header-slot" class="auth-header-slot">
-                    <button class="auth-btn" id="open-auth-btn" title="Kirish / Ro'yxatdan o'tish">
-                        <i class="fas fa-user-circle"></i> <span>Kirish</span>
+                    <button class="auth-btn" id="open-auth-btn" title="Kirish / Qulf">
+                        <i class="fas fa-shield-alt"></i> <span>Kirish</span>
                     </button>
                     <div class="user-profile-badge" id="user-profile-badge" style="display: none;">
-                        <i class="fas fa-user-md user-badge-icon"></i>
-                        <span id="user-display-name" class="user-name-text">Foydalanuvchi</span>
+                        <img id="user-avatar-img" class="user-avatar-img" src="icon-192.png" alt="Doctor" style="display: none;">
+                        <i class="fas fa-user-md user-badge-icon" id="user-avatar-fallback"></i>
+                        <span id="user-display-name" class="user-name-text">Shifokor</span>
+                        <button id="lock-app-btn" class="header-icon-action-btn" title="Dasturni qulflash">
+                            <i class="fas fa-lock"></i>
+                        </button>
+                        <button id="open-sec-settings-btn" class="header-icon-action-btn" title="Xavfsizlik sozlamalari">
+                            <i class="fas fa-shield-alt"></i>
+                        </button>
                         <button id="logout-btn" class="logout-icon-btn" title="Chiqish">
                             <i class="fas fa-sign-out-alt"></i>
                         </button>
@@ -412,6 +556,67 @@
                         <i class="fas fa-sign-in-alt"></i> Kirish
                     </button>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⚙️ Face ID va PIN Xavfsizlik Sozlamalari Modali -->
+    <div class="modal-overlay" id="security-settings-modal" style="display: none;">
+        <div class="modal-box sec-settings-box animated-fade-in" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 class="auth-modal-title"><i class="fas fa-shield-alt"></i> Xavfsizlik Sozlamalari</h3>
+                <button class="close-modal-btn" id="close-sec-settings-btn" type="button" aria-label="Yopish">&times;</button>
+            </div>
+            <div class="modal-body sec-settings-body">
+                <div class="sec-profile-summary">
+                    <div class="sec-profile-avatar-wrap">
+                        <img id="settings-avatar-img" src="icon-192.png" alt="Avatar" class="settings-avatar-img" style="display: none;">
+                        <div id="settings-avatar-icon-fallback" class="settings-avatar-fallback"><i class="fas fa-user-md"></i></div>
+                        <span class="sec-verified-icon" id="settings-verified-badge" title="Face ID Faol"><i class="fas fa-check"></i></span>
+                    </div>
+                    <div class="sec-profile-info">
+                        <h4 id="settings-user-name">Shifokor</h4>
+                        <p id="settings-face-status"><i class="fas fa-camera"></i> Face ID holati: <span>Faol</span></p>
+                    </div>
+                </div>
+
+                <div class="sec-settings-list">
+                    <!-- Option 1: Re-register Face -->
+                    <div class="sec-setting-item">
+                        <div class="sec-setting-icon"><i class="fas fa-user-astronaut"></i></div>
+                        <div class="sec-setting-text">
+                            <h4>Face ID Yuzini Qayta Skanerlash</h4>
+                            <p>Yangi yuz nusxasini 1 marta skanerlab yangilang</p>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline" id="btn-reregister-face">
+                            <i class="fas fa-sync-alt"></i> Yangilash
+                        </button>
+                    </div>
+
+                    <!-- Option 2: Change 4-digit PIN -->
+                    <div class="sec-setting-item">
+                        <div class="sec-setting-icon"><i class="fas fa-th"></i></div>
+                        <div class="sec-setting-text">
+                            <h4>4 Xonali PIN Kodni O'zgartirish</h4>
+                            <p>Yangi 4 xonali maxfiy kod o'rnating</p>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline" id="btn-change-pin">
+                            <i class="fas fa-edit"></i> O'zgartirish
+                        </button>
+                    </div>
+
+                    <!-- Option 3: Lock App Now -->
+                    <div class="sec-setting-item">
+                        <div class="sec-setting-icon"><i class="fas fa-lock"></i></div>
+                        <div class="sec-setting-text">
+                            <h4>Dasturni Hozir Qulflash</h4>
+                            <p>Ilovani qulflab, Face ID / PIN oynasini ochish</p>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-primary" id="btn-lock-from-settings">
+                            <i class="fas fa-lock"></i> Qulflash
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

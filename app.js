@@ -17,6 +17,7 @@ function initApp() {
     initPWA();
     initAndroidOptimizations();
     initAuth();
+    initSecuritySystem();
     initWelcomeSplash();
 }
 
@@ -1710,12 +1711,27 @@ function updateAuthUI() {
     const openAuthBtn = document.getElementById('open-auth-btn');
     const profileBadge = document.getElementById('user-profile-badge');
     const displayName = document.getElementById('user-display-name');
+    const userAvatarImg = document.getElementById('user-avatar-img');
+    const userAvatarFallback = document.getElementById('user-avatar-fallback');
 
     let currentUser = null;
     try {
         currentUser = JSON.parse(localStorage.getItem('med_latin_user'));
     } catch(err) {
         currentUser = null;
+    }
+
+    // Doctor Face Avatar update
+    const savedAvatar = localStorage.getItem('med_doctor_face_avatar');
+    if (savedAvatar) {
+        if (userAvatarImg) {
+            userAvatarImg.src = savedAvatar;
+            userAvatarImg.style.display = 'inline-block';
+        }
+        if (userAvatarFallback) userAvatarFallback.style.display = 'none';
+    } else {
+        if (userAvatarImg) userAvatarImg.style.display = 'none';
+        if (userAvatarFallback) userAvatarFallback.style.display = 'inline-block';
     }
 
     if (currentUser && currentUser.name) {
@@ -1757,6 +1773,9 @@ function initWelcomeSplash() {
             splashScreen.classList.add('splash-exit');
             setTimeout(() => {
                 splashScreen.style.display = 'none';
+                if (typeof window.checkAppSecurityLock === 'function') {
+                    window.checkAppSecurityLock();
+                }
             }, 450);
         }, 280);
     }
@@ -1801,5 +1820,699 @@ function initWelcomeSplash() {
         finishSplash();
     });
 }
+
+/* ==========================================================================
+   12. BIOMETRIC FACE ID & 4-DIGIT PIN SECURITY SYSTEM (SHIFOKOR HIMOYASI)
+   ========================================================================== */
+function initSecuritySystem() {
+    const secScreen = document.getElementById('app-security-screen');
+    if (!secScreen) return;
+
+    // Tabs
+    const tabFace = document.getElementById('sec-tab-face');
+    const tabPin = document.getElementById('sec-tab-pin');
+    const panelFace = document.getElementById('sec-panel-face');
+    const panelPin = document.getElementById('sec-panel-pin');
+    const switchToPinBtn = document.getElementById('btn-switch-to-pin');
+    const switchToFaceBtn = document.getElementById('pin-pad-switch-face');
+
+    // Face elements
+    const faceVideo = document.getElementById('face-video');
+    const faceCanvas = document.getElementById('face-canvas');
+    const faceStatusBox = document.getElementById('face-status-box');
+    const faceStatusIcon = document.getElementById('face-status-icon');
+    const faceStatusTitle = document.getElementById('face-status-title');
+    const faceStatusSub = document.getElementById('face-status-sub');
+    const faceCamPlaceholder = document.getElementById('face-cam-placeholder');
+    const faceRegisterBox = document.getElementById('face-register-box');
+    const registerFaceBtn = document.getElementById('btn-register-face');
+    const laserLine = document.getElementById('face-laser-line');
+
+    // PIN elements
+    const pinCircles = document.querySelectorAll('.pin-circle');
+    const pinAlertNotice = document.getElementById('pin-alert-notice');
+    const pinPadButtons = document.querySelectorAll('.pin-pad-btn[data-key]');
+    const pinDelBtn = document.getElementById('pin-pad-del');
+    const pinPromptTitle = document.getElementById('pin-prompt-title');
+    const pinPromptSub = document.getElementById('pin-prompt-sub');
+    const pinSetupActions = document.getElementById('pin-setup-actions');
+    const cancelPinSetupBtn = document.getElementById('btn-cancel-pin-setup');
+
+    // Header & Modal elements
+    const quickLockBtn = document.getElementById('header-lock-quick-btn');
+    const headerLockBtn = document.getElementById('lock-app-btn');
+    const openSecSettingsBtn = document.getElementById('open-sec-settings-btn');
+    const secSettingsModal = document.getElementById('security-settings-modal');
+    const closeSecSettingsBtn = document.getElementById('close-sec-settings-btn');
+    const btnReregisterFace = document.getElementById('btn-reregister-face');
+    const btnChangePin = document.getElementById('btn-change-pin');
+    const btnLockFromSettings = document.getElementById('btn-lock-from-settings');
+    const settingsAvatarImg = document.getElementById('settings-avatar-img');
+    const settingsAvatarFallback = document.getElementById('settings-avatar-icon-fallback');
+    const settingsFaceStatus = document.getElementById('settings-face-status');
+
+    // Internal state
+    let activeStream = null;
+    let faceCheckTimer = null;
+    let pinInput = '';
+    let pinSetupMode = false; // false = unlock mode, 'new' = enter new pin, 'confirm' = confirm new pin
+    let tempNewPin = '';
+    let isScreenLocked = false;
+    let consecutiveMatches = 0;
+
+    // Helper: Stored PIN
+    function getStoredPin() {
+        return localStorage.getItem('med_doctor_pin') || '1234';
+    }
+
+    // Helper: Stored Face Vector
+    function getStoredFaceVector() {
+        try {
+            const raw = localStorage.getItem('med_doctor_face_vector');
+            return raw ? JSON.parse(raw) : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function isFaceRegistered() {
+        return !!getStoredFaceVector();
+    }
+
+    // Status helper
+    function updateStatusBox(state, title, subtitle) {
+        if (!faceStatusBox) return;
+        faceStatusBox.className = 'face-status-box';
+        if (state === 'success') faceStatusBox.classList.add('success');
+        if (state === 'error') faceStatusBox.classList.add('error');
+
+        if (faceStatusIcon) {
+            if (state === 'success') {
+                faceStatusIcon.innerHTML = '<i class="fas fa-check-circle" style="color: #34d399;"></i>';
+            } else if (state === 'error') {
+                faceStatusIcon.innerHTML = '<i class="fas fa-times-circle" style="color: #f87171;"></i>';
+            } else {
+                faceStatusIcon.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+            }
+        }
+
+        if (title && faceStatusTitle) faceStatusTitle.textContent = title;
+        if (subtitle && faceStatusSub) faceStatusSub.textContent = subtitle;
+    }
+
+    // Biometric Face Feature Extractor
+    function extractFaceFeatures(video, canvas) {
+        if (!video || video.readyState < 2) return null;
+        const w = 96;
+        const h = 96;
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return null;
+
+        const vw = video.videoWidth || 320;
+        const vh = video.videoHeight || 240;
+        const size = Math.min(vw, vh);
+        const sx = (vw - size) / 2;
+        const sy = (vh - size) / 2;
+        ctx.drawImage(video, sx, sy, size, size, 0, 0, w, h);
+
+        const imgData = ctx.getImageData(0, 0, w, h);
+        const data = imgData.data;
+
+        // Luminance Variance check (anti-blank/anti-dark check)
+        let totalLum = 0;
+        const lumValues = [];
+        for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+            totalLum += lum;
+            lumValues.push(lum);
+        }
+        const meanLum = totalLum / lumValues.length;
+
+        let variance = 0;
+        for (let i = 0; i < lumValues.length; i += 8) {
+            const diff = lumValues[i] - meanLum;
+            variance += diff * diff;
+        }
+        variance = variance / (lumValues.length / 8);
+
+        if (variance < 22 || meanLum < 12 || meanLum > 245) {
+            return { valid: false, reason: 'low_contrast' };
+        }
+
+        // 6x6 Spatial Grid Luminance Vector (36 features)
+        const gridSize = 6;
+        const cellW = Math.floor(w / gridSize);
+        const cellH = Math.floor(h / gridSize);
+        const vector = [];
+
+        for (let gy = 0; gy < gridSize; gy++) {
+            for (let gx = 0; gx < gridSize; gx++) {
+                let cellLum = 0;
+                let cellCount = 0;
+                for (let y = gy * cellH; y < (gy + 1) * cellH; y++) {
+                    for (let x = gx * cellW; x < (gx + 1) * cellW; x++) {
+                        const idx = (y * w + x) * 4;
+                        cellLum += 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
+                        cellCount++;
+                    }
+                }
+                vector.push(cellLum / (cellCount * 255));
+            }
+        }
+
+        // Color and Edge balance features (12 features)
+        for (let t = 0; t < 4; t++) {
+            let rSum = 0, gSum = 0, bSum = 0, cnt = 0;
+            const yStart = t * 24;
+            const yEnd = (t + 1) * 24;
+            for (let y = yStart; y < yEnd; y++) {
+                for (let x = 16; x < 80; x++) {
+                    const idx = (y * w + x) * 4;
+                    rSum += data[idx];
+                    gSum += data[idx + 1];
+                    bSum += data[idx + 2];
+                    cnt++;
+                }
+            }
+            const avgR = rSum / (cnt || 1);
+            const avgG = gSum / (cnt || 1);
+            const avgB = bSum / (cnt || 1);
+            vector.push((avgR - avgG) / (avgR + avgG + 10));
+            vector.push((avgR - avgB) / (avgR + avgB + 10));
+            vector.push((avgR + avgG + avgB) / 765);
+        }
+
+        // Generate small avatar thumbnail
+        const thumbCanvas = document.createElement('canvas');
+        thumbCanvas.width = 72;
+        thumbCanvas.height = 72;
+        const tCtx = thumbCanvas.getContext('2d');
+        if (tCtx) {
+            tCtx.drawImage(canvas, 0, 0, 72, 72);
+        }
+        const avatarUrl = thumbCanvas.toDataURL('image/jpeg', 0.82);
+
+        return {
+            valid: true,
+            vector: vector,
+            avatar: avatarUrl
+        };
+    }
+
+    // Cosine similarity
+    function calculateVectorSimilarity(v1, v2) {
+        if (!v1 || !v2 || v1.length !== v2.length) return 0;
+        let dot = 0;
+        let mag1 = 0;
+        let mag2 = 0;
+        for (let i = 0; i < v1.length; i++) {
+            dot += v1[i] * v2[i];
+            mag1 += v1[i] * v1[i];
+            mag2 += v2[i] * v2[i];
+        }
+        if (mag1 === 0 || mag2 === 0) return 0;
+        return dot / (Math.sqrt(mag1) * Math.sqrt(mag2));
+    }
+
+    // Camera Lifecycle
+    async function startCamera() {
+        stopCamera();
+        if (faceCamPlaceholder) faceCamPlaceholder.style.display = 'flex';
+        updateStatusBox('loading', 'Kamera faollashtirilmoqda...', 'Yuzingizni kameraning o\'rtasiga qarating');
+
+        try {
+            const constraints = {
+                video: {
+                    facingMode: 'user',
+                    width: { ideal: 480 },
+                    height: { ideal: 480 }
+                },
+                audio: false
+            };
+            activeStream = await navigator.mediaDevices.getUserMedia(constraints);
+            if (faceVideo) {
+                faceVideo.srcObject = activeStream;
+                faceVideo.onloadedmetadata = () => {
+                    faceVideo.play().catch(() => {});
+                    if (faceCamPlaceholder) faceCamPlaceholder.style.display = 'none';
+                    startFaceVerificationLoop();
+                };
+            }
+        } catch (err) {
+            console.warn("Camera could not start:", err);
+            if (faceCamPlaceholder) {
+                faceCamPlaceholder.style.display = 'flex';
+                faceCamPlaceholder.innerHTML = `<i class="fas fa-video-slash" style="color: #f87171;"></i><p>Kamera topilmadi yoki ruxsat berilmadi</p>`;
+            }
+            updateStatusBox('error', 'Kameradan foydalanish imkoni yo\'q', '4 xonali PIN kod orqali kiring');
+            setTimeout(() => {
+                if (isScreenLocked) switchTab('pin');
+            }, 1200);
+        }
+    }
+
+    function stopCamera() {
+        if (faceCheckTimer) {
+            clearInterval(faceCheckTimer);
+            faceCheckTimer = null;
+        }
+        if (activeStream) {
+            try {
+                activeStream.getTracks().forEach(track => track.stop());
+            } catch (e) {}
+            activeStream = null;
+        }
+        if (faceVideo) {
+            faceVideo.srcObject = null;
+        }
+        consecutiveMatches = 0;
+    }
+
+    // Real-time verification loop
+    function startFaceVerificationLoop() {
+        if (faceCheckTimer) clearInterval(faceCheckTimer);
+        consecutiveMatches = 0;
+
+        faceCheckTimer = setInterval(() => {
+            if (!isScreenLocked || !faceVideo || faceVideo.paused || faceVideo.ended) return;
+
+            const registered = isFaceRegistered();
+            if (!registered) {
+                if (faceRegisterBox) faceRegisterBox.style.display = 'block';
+                updateStatusBox('loading', "Face ID o'rnatilmagan", "Yuzingizni 1 marta skanerlab saqlang");
+                return;
+            } else {
+                if (faceRegisterBox) faceRegisterBox.style.display = 'none';
+            }
+
+            const sample = extractFaceFeatures(faceVideo, faceCanvas);
+            if (!sample || !sample.valid) {
+                updateStatusBox('loading', "Yuz aniqlanmoqda...", "Yuzingizni kameraga to'g'rilang");
+                consecutiveMatches = 0;
+                return;
+            }
+
+            const storedVector = getStoredFaceVector();
+            const similarity = calculateVectorSimilarity(sample.vector, storedVector);
+
+            if (similarity >= 0.88) {
+                consecutiveMatches++;
+                if (consecutiveMatches >= 2) {
+                    consecutiveMatches = 0;
+                    clearInterval(faceCheckTimer);
+                    faceCheckTimer = null;
+                    updateStatusBox('success', '✅ Shifokor yuzi tasdiqlandi!', 'Xush kelibsiz! Dastur ochilmoqda...');
+                    triggerHaptic(30);
+
+                    if (laserLine) {
+                        laserLine.style.background = '#34d399';
+                        laserLine.style.boxShadow = '0 0 20px 8px rgba(52, 211, 153, 0.9)';
+                    }
+
+                    setTimeout(() => {
+                        unlockApp('Face ID orqali muvaffaqiyatli kirildi');
+                    }, 400);
+                }
+            } else {
+                consecutiveMatches = 0;
+                updateStatusBox('error', '❌ Begona yuz aniqlandi!', 'Tizim faqat ro\'yxatdan o\'tgan shifokorga ochiladi');
+                triggerHaptic(15);
+            }
+        }, 320);
+    }
+
+    // Register Face Action (1 marta skanerlab saqlash)
+    if (registerFaceBtn) {
+        registerFaceBtn.addEventListener('click', () => {
+            triggerHaptic(20);
+            if (!faceVideo || faceVideo.readyState < 2) {
+                showToast("Iltimos, kamera to'liq ochilishini kuting", 'warning');
+                return;
+            }
+
+            registerFaceBtn.disabled = true;
+            registerFaceBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Skanerlanmoqda...';
+            updateStatusBox('loading', 'Yuz skanerlanmoqda...', 'Kameraga qarab turing...');
+
+            setTimeout(() => {
+                const sample = extractFaceFeatures(faceVideo, faceCanvas);
+                if (!sample || !sample.valid) {
+                    registerFaceBtn.disabled = false;
+                    registerFaceBtn.innerHTML = '<i class="fas fa-user-check"></i> Yuzni Bir Marta Skanerlash va Saqlash';
+                    updateStatusBox('error', 'Yuz aniqlanmadi!', 'Yuzingizni kameraning o\'rtasiga to\'g\'rilang va qayta bosing');
+                    triggerHaptic(35);
+                    return;
+                }
+
+                localStorage.setItem('med_doctor_face_vector', JSON.stringify(sample.vector));
+                if (sample.avatar) {
+                    localStorage.setItem('med_doctor_face_avatar', sample.avatar);
+                }
+                localStorage.setItem('med_face_registered', 'true');
+
+                updateStatusBox('success', '✅ Yuz muvaffaqiyatli saqlandi!', 'Tizim faqat sizning yuzingizga ochiladi');
+                triggerHaptic(35);
+                updateAuthUI();
+                syncSecuritySettingsUI();
+
+                setTimeout(() => {
+                    registerFaceBtn.disabled = false;
+                    registerFaceBtn.innerHTML = '<i class="fas fa-user-check"></i> Yuzni Bir Marta Skanerlash va Saqlash';
+                    unlockApp('Face ID muvaffaqiyatli sozlandi!');
+                }, 500);
+            }, 600);
+        });
+    }
+
+    // PIN Management Functions
+    function resetPinUI() {
+        pinInput = '';
+        updatePinDots('normal');
+        clearPinNotice();
+        if (pinPromptTitle) {
+            pinPromptTitle.textContent = pinSetupMode ? "Yangi 4 xonali PIN kodni kiriting" : "4 xonali PIN kodni kiriting";
+        }
+        if (pinPromptSub) {
+            pinPromptSub.textContent = "Shaxsiy 4 ta raqamli xavfsizlik kodingiz";
+        }
+        if (pinSetupActions) {
+            pinSetupActions.style.display = pinSetupMode ? 'block' : 'none';
+        }
+    }
+
+    function clearPinNotice() {
+        if (pinAlertNotice) {
+            pinAlertNotice.style.display = 'none';
+            pinAlertNotice.textContent = '';
+        }
+    }
+
+    function showPinNotice(msg, type = 'error') {
+        if (!pinAlertNotice) return;
+        pinAlertNotice.style.display = 'block';
+        pinAlertNotice.textContent = msg;
+        pinAlertNotice.style.color = type === 'success' ? '#34d399' : (type === 'info' ? '#38bdf8' : '#f87171');
+    }
+
+    function updatePinDots(state = 'normal') {
+        const len = pinInput.length;
+        pinCircles.forEach((circle, idx) => {
+            circle.className = 'pin-circle';
+            if (state === 'success') {
+                circle.classList.add('success');
+            } else if (state === 'error') {
+                circle.classList.add('error');
+            } else if (idx < len) {
+                circle.classList.add('filled');
+            }
+        });
+    }
+
+    function triggerPinShake() {
+        const row = document.getElementById('pin-dots-row');
+        if (row) {
+            row.classList.remove('pin-shake');
+            void row.offsetWidth;
+            row.classList.add('pin-shake');
+        }
+    }
+
+    function handlePinInput(key) {
+        if (pinInput.length >= 4) return;
+        pinInput += key;
+        triggerHaptic(12);
+        updatePinDots('normal');
+        clearPinNotice();
+
+        if (pinInput.length === 4) {
+            processCompletePin();
+        }
+    }
+
+    function handlePinDelete() {
+        if (pinInput.length > 0) {
+            pinInput = pinInput.slice(0, -1);
+            triggerHaptic(10);
+            updatePinDots('normal');
+            clearPinNotice();
+        }
+    }
+
+    function processCompletePin() {
+        if (pinSetupMode === 'new') {
+            tempNewPin = pinInput;
+            pinSetupMode = 'confirm';
+            pinInput = '';
+            updatePinDots('normal');
+            if (pinPromptTitle) pinPromptTitle.textContent = "Yangi PIN kodni tasdiqlang";
+            if (pinPromptSub) pinPromptSub.textContent = "4 xonali kodni takroran kiriting";
+            showPinNotice("Kodni qaytadan kiriting", 'info');
+            return;
+        }
+
+        if (pinSetupMode === 'confirm') {
+            if (pinInput === tempNewPin) {
+                localStorage.setItem('med_doctor_pin', pinInput);
+                pinSetupMode = false;
+                updatePinDots('success');
+                showPinNotice("✅ Yangi PIN kod muvaffaqiyatli o'rnatildi!", 'success');
+                triggerHaptic(30);
+                setTimeout(() => {
+                    resetPinUI();
+                    unlockApp("Yangi PIN kod o'rnatildi");
+                }, 500);
+            } else {
+                updatePinDots('error');
+                triggerPinShake();
+                showPinNotice("❌ PIN kodlar mos kelmadi! Qaytadan kiriting", 'error');
+                triggerHaptic(40);
+                setTimeout(() => {
+                    pinSetupMode = 'new';
+                    pinInput = '';
+                    tempNewPin = '';
+                    updatePinDots('normal');
+                    if (pinPromptTitle) pinPromptTitle.textContent = "Yangi 4 xonali PIN kodni kiriting";
+                    if (pinPromptSub) pinPromptSub.textContent = "Shaxsiy 4 ta raqamli xavfsizlik kodingiz";
+                }, 800);
+            }
+            return;
+        }
+
+        // Normal Unlock
+        const savedPin = getStoredPin();
+        if (pinInput === savedPin) {
+            updatePinDots('success');
+            showPinNotice("✅ PIN kod to'g'ri! MedLatin ochilmoqda...", 'success');
+            triggerHaptic(25);
+            setTimeout(() => {
+                unlockApp("PIN kod orqali kirildi");
+            }, 350);
+        } else {
+            updatePinDots('error');
+            triggerPinShake();
+            showPinNotice("❌ PIN kod noto'g'ri! Qayta urinib ko'ring", 'error');
+            triggerHaptic(45);
+            setTimeout(() => {
+                pinInput = '';
+                updatePinDots('normal');
+            }, 600);
+        }
+    }
+
+    // Attach keypad events
+    pinPadButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const key = btn.getAttribute('data-key');
+            if (key) handlePinInput(key);
+        });
+    });
+
+    if (pinDelBtn) {
+        pinDelBtn.addEventListener('click', handlePinDelete);
+    }
+
+    if (cancelPinSetupBtn) {
+        cancelPinSetupBtn.addEventListener('click', () => {
+            pinSetupMode = false;
+            pinInput = '';
+            tempNewPin = '';
+            resetPinUI();
+        });
+    }
+
+    // Keyboard support for PIN entry
+    document.addEventListener('keydown', (e) => {
+        if (!isScreenLocked || !panelPin || panelPin.style.display === 'none') return;
+        if (/^[0-9]$/.test(e.key)) {
+            handlePinInput(e.key);
+        } else if (e.key === 'Backspace') {
+            handlePinDelete();
+        }
+    });
+
+    // Tab Switching
+    function switchTab(mode) {
+        if (mode === 'face') {
+            if (tabFace) tabFace.classList.add('active');
+            if (tabPin) tabPin.classList.remove('active');
+            if (panelFace) panelFace.style.display = 'flex';
+            if (panelPin) panelPin.style.display = 'none';
+            startCamera();
+        } else {
+            if (tabPin) tabPin.classList.add('active');
+            if (tabFace) tabFace.classList.remove('active');
+            if (panelPin) panelPin.style.display = 'flex';
+            if (panelFace) panelFace.style.display = 'none';
+            stopCamera();
+            resetPinUI();
+        }
+    }
+
+    if (tabFace) tabFace.addEventListener('click', () => switchTab('face'));
+    if (tabPin) tabPin.addEventListener('click', () => switchTab('pin'));
+    if (switchToPinBtn) switchToPinBtn.addEventListener('click', () => switchTab('pin'));
+    if (switchToFaceBtn) switchToFaceBtn.addEventListener('click', () => switchTab('face'));
+
+    // Lock and Unlock lifecycle
+    function lockApp(reason) {
+        isScreenLocked = true;
+        secScreen.style.display = 'flex';
+        secScreen.classList.remove('animated-fade-out');
+
+        resetPinUI();
+        switchTab('face');
+        syncSecuritySettingsUI();
+        triggerHaptic(20);
+    }
+
+    function unlockApp(toastMessage) {
+        isScreenLocked = false;
+        stopCamera();
+        secScreen.classList.add('animated-fade-out');
+        setTimeout(() => {
+            secScreen.style.display = 'none';
+            secScreen.classList.remove('animated-fade-out');
+        }, 250);
+
+        updateAuthUI();
+        syncSecuritySettingsUI();
+        if (toastMessage) {
+            showToast(toastMessage, 'success');
+        }
+    }
+
+    // Expose lock functions globally
+    window.checkAppSecurityLock = function() {
+        lockApp();
+    };
+    window.lockAppNow = lockApp;
+
+    // Security Settings Modal Sync
+    function syncSecuritySettingsUI() {
+        const hasFace = isFaceRegistered();
+        const savedAvatar = localStorage.getItem('med_doctor_face_avatar');
+        let currentUser = null;
+        try {
+            currentUser = JSON.parse(localStorage.getItem('med_latin_user'));
+        } catch(e) {}
+
+        const doctorName = currentUser && currentUser.name ? currentUser.name : 'Shifokor';
+        const settingsUserName = document.getElementById('settings-user-name');
+        if (settingsUserName) settingsUserName.textContent = doctorName;
+
+        if (savedAvatar) {
+            if (settingsAvatarImg) {
+                settingsAvatarImg.src = savedAvatar;
+                settingsAvatarImg.style.display = 'block';
+            }
+            if (settingsAvatarFallback) settingsAvatarFallback.style.display = 'none';
+        } else {
+            if (settingsAvatarImg) settingsAvatarImg.style.display = 'none';
+            if (settingsAvatarFallback) settingsAvatarFallback.style.display = 'flex';
+        }
+
+        if (settingsFaceStatus) {
+            settingsFaceStatus.innerHTML = hasFace
+                ? `<i class="fas fa-check-circle" style="color: #34d399;"></i> Face ID holati: <span>Faol (Saqlangan)</span>`
+                : `<i class="fas fa-exclamation-triangle" style="color: #fbbf24;"></i> Face ID holati: <span style="color:#fbbf24;">O'rnatilmagan</span>`;
+        }
+    }
+
+    // Header buttons
+    if (quickLockBtn) {
+        quickLockBtn.addEventListener('click', () => {
+            lockApp();
+        });
+    }
+
+    if (headerLockBtn) {
+        headerLockBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            lockApp();
+        });
+    }
+
+    if (openSecSettingsBtn && secSettingsModal) {
+        openSecSettingsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            syncSecuritySettingsUI();
+            secSettingsModal.style.display = 'flex';
+            triggerHaptic(15);
+        });
+    }
+
+    if (closeSecSettingsBtn && secSettingsModal) {
+        closeSecSettingsBtn.addEventListener('click', () => {
+            secSettingsModal.style.display = 'none';
+        });
+    }
+
+    if (secSettingsModal) {
+        secSettingsModal.addEventListener('click', (e) => {
+            if (e.target === secSettingsModal) {
+                secSettingsModal.style.display = 'none';
+            }
+        });
+    }
+
+    if (btnLockFromSettings) {
+        btnLockFromSettings.addEventListener('click', () => {
+            if (secSettingsModal) secSettingsModal.style.display = 'none';
+            lockApp();
+        });
+    }
+
+    if (btnReregisterFace) {
+        btnReregisterFace.addEventListener('click', () => {
+            if (secSettingsModal) secSettingsModal.style.display = 'none';
+            lockApp();
+            switchTab('face');
+            if (faceRegisterBox) faceRegisterBox.style.display = 'block';
+            updateStatusBox('loading', 'Yangi yuz nusxasi', 'Yuzingizni kameraga qaratib, saqlash tugmasini bosing');
+        });
+    }
+
+    if (btnChangePin) {
+        btnChangePin.addEventListener('click', () => {
+            if (secSettingsModal) secSettingsModal.style.display = 'none';
+            lockApp();
+            switchTab('pin');
+            pinSetupMode = 'new';
+            tempNewPin = '';
+            pinInput = '';
+            updatePinDots('normal');
+            if (pinPromptTitle) pinPromptTitle.textContent = "Yangi 4 xonali PIN kodni kiriting";
+            if (pinPromptSub) pinPromptSub.textContent = "Yangi 4 ta raqam kiriting";
+            if (pinSetupActions) pinSetupActions.style.display = 'block';
+            showPinNotice("Yangi PIN kodni kiriting", 'info');
+        });
+    }
+}
+
 
 

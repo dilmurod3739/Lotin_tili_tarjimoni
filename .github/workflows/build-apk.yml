@@ -82,23 +82,24 @@ jobs:
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.5.0
-          name: "MedLatin v1.5.0 (Yangilangan Tibbiy Kirish Animatsiyasi & APK)"
+          tag_name: v1.6.0
+          name: "MedLatin v1.6.0 (Face ID & 4 Xonali PIN Kod Himoyasi, Yangi APK)"
           draft: false
           prerelease: false
           make_latest: true
           body: |
-            ## 📱 MedLatin v1.5.0 — Yangilangan Rasmiy Android APK
+            ## 📱 MedLatin v1.6.0 — Biometrik Face ID va PIN Himoyali Rasmiy Android APK
 
             ✨ **Ushbu versiyadagi yangiliklar:**
-            - 🌟 **Yangi Zamonaviy Tibbiy Kirish Animatsiyasi:** Kardiogramma (EKG puls) to'lqini va tezkor 60fps silliq to'lish animatsiyasi bilan zamonaviy kirish ekrani.
-            - ⚡ **Toza va Qulay Interfeys:** Sarlavhadagi bo'sh tugma, 10-40% bloklari hamda o'tkazib yuborish tugmasi olib tashlandi. Ekranni bir marta bosish orqali darhol kirish imkoniyati yaratildi.
-            - 🩺 **200+ Klinik Tashxislar va Retseptlar Dekoderi:** To'liq oflayn (internetsiz) ishlaydi.
-            - 💎 **Tezkor yuklanish va optimallashtirilgan ishlash.**
+            - 🔐 **Biometrik Face ID Himoyasi:** Shifokor yuzini 1 marta skanerlab eslab qolish va keyingi kirishlarda begona yuzlarni rad etib, faqat shifokor yuzini tanish tizimi.
+            - 🔢 **4 Xonali PIN Kod Tizimi:** iOS/Android uslubidagi 0-9 raqamli klaviatura orqali tezkor kirish va maxfiy PIN kodni o'zgartirish imkoniyati.
+            - 🛡️ **Xavfsizlik Sozlamalari Modali:** Dasturni bir bosishda qulflash, yuzni qayta skanerlash va 4 xonali kodni boshqarish.
+            - 🩺 **Yangi Tibbiy EKG Kirish Animatsiyasi:** Kardiogramma to'lqini va 60fps silliq yuklanish.
+            - 💊 **200+ Klinik Tashxislar va Retseptlar Dekoderi:** To'liq oflayn (internetsiz) ishlaydi.
 
             ### 📥 O'rnatish yo'riqnomasi:
             1. Quyidagi **MedLatin.apk** faylini yuklab oling.
-            2. Telefoningizda faylni ochib, **"O'rnatish" (Установить)** tugmasini bosing.
+            2. Telefoningizda ochib, **"O'rnatish" (Установить)** tugmasini bosing.
             3. Agar telefoningiz xavfsizlik ruxsati so'rasa, *"Noma'lum manbalardan o'rnatishga ruxsat berish"* bandini yoqing.
           files: release-output/MedLatin.apk
         env:
