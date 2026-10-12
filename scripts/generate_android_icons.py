@@ -117,7 +117,64 @@ def process_icons():
                     img_splash.save(target_path, "PNG", optimize=True)
                     print(f"[IconGen] Updated splash: {target_path}")
 
+    # 5. Configure Android CAMERA & Audio Permissions & MainActivity.java
+    configure_camera_permissions()
+
     print("[IconGen] Successfully completed Android launcher & adaptive icons configuration!")
+
+def configure_camera_permissions():
+    manifest_path = os.path.join("android", "app", "src", "main", "AndroidManifest.xml")
+    if os.path.exists(manifest_path):
+        with open(manifest_path, "r", encoding="utf-8") as f:
+            manifest_content = f.read()
+
+        camera_permissions = '''
+    <!-- Camera & Hardware Permissions for Biometric Face ID -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.front" android:required="false" />
+'''
+        if "android.permission.CAMERA" not in manifest_content:
+            manifest_content = manifest_content.replace("<application", camera_permissions + "\n    <application", 1)
+            with open(manifest_path, "w", encoding="utf-8") as f:
+                f.write(manifest_content)
+            print("[CameraConfig] Successfully injected CAMERA permissions into AndroidManifest.xml")
+        else:
+            print("[CameraConfig] CAMERA permission already present in AndroidManifest.xml")
+
+    # Configure MainActivity.java with auto-request for CAMERA
+    java_dir = os.path.join("android", "app", "src", "main", "java", "uz", "dilmurod", "medlatin")
+    main_activity_path = os.path.join(java_dir, "MainActivity.java")
+    if os.path.exists(main_activity_path):
+        main_activity_code = '''package uz.dilmurod.medlatin;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import com.getcapacitor.BridgeActivity;
+
+public class MainActivity extends BridgeActivity {
+    private static final int CAMERA_PERMISSION_REQ = 1001;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Auto-request CAMERA permission if not yet granted
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQ);
+        }
+    }
+}
+'''
+        with open(main_activity_path, "w", encoding="utf-8") as f:
+            f.write(main_activity_code)
+        print("[CameraConfig] Configured MainActivity.java with runtime CAMERA permission request")
 
 if __name__ == "__main__":
     process_icons()

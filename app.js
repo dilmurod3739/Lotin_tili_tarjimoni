@@ -2042,8 +2042,20 @@ function initSecuritySystem() {
     // Camera Lifecycle
     async function startCamera() {
         stopCamera();
-        if (faceCamPlaceholder) faceCamPlaceholder.style.display = 'flex';
+        if (faceCamPlaceholder) {
+            faceCamPlaceholder.style.display = 'flex';
+            faceCamPlaceholder.innerHTML = `<i class="fas fa-camera"></i><p>Kamera ochilmoqda...</p>`;
+        }
         updateStatusBox('loading', 'Kamera faollashtirilmoqda...', 'Yuzingizni kameraning o\'rtasiga qarating');
+
+        // Check if running inside Capacitor Android app
+        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Camera) {
+            try {
+                await window.Capacitor.Plugins.Camera.requestPermissions({ permissions: ['camera'] });
+            } catch (capErr) {
+                console.warn("Capacitor camera permission check:", capErr);
+            }
+        }
 
         try {
             const constraints = {
@@ -2067,12 +2079,25 @@ function initSecuritySystem() {
             console.warn("Camera could not start:", err);
             if (faceCamPlaceholder) {
                 faceCamPlaceholder.style.display = 'flex';
-                faceCamPlaceholder.innerHTML = `<i class="fas fa-video-slash" style="color: #f87171;"></i><p>Kamera topilmadi yoki ruxsat berilmadi</p>`;
+                faceCamPlaceholder.innerHTML = `
+                    <i class="fas fa-video-slash" style="color: #f87171; font-size: 1.8rem; margin-bottom: 2px;"></i>
+                    <p style="margin: 2px 0 6px; font-weight: 700; color: #f87171; font-size: 0.78rem;">Kamera ruxsati berilmadi</p>
+                    <button type="button" class="btn btn-primary btn-sm" id="btn-retry-cam" style="font-size: 0.72rem; padding: 5px 12px; border-radius: 8px; margin-bottom: 6px;">
+                        <i class="fas fa-redo"></i> Ruxsat berish va Qayta urinish
+                    </button>
+                    <p style="font-size: 0.65rem; color: #94a3b8; padding: 0 10px; line-height: 1.3; margin: 0;">
+                        Sozlamalar &rarr; Ilovalar &rarr; MedLatin &rarr; Ruxsatlar &rarr; Kamera ni yoqing
+                    </p>
+                `;
+                const retryBtn = document.getElementById('btn-retry-cam');
+                if (retryBtn) {
+                    retryBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        startCamera();
+                    });
+                }
             }
-            updateStatusBox('error', 'Kameradan foydalanish imkoni yo\'q', '4 xonali PIN kod orqali kiring');
-            setTimeout(() => {
-                if (isScreenLocked) switchTab('pin');
-            }, 1200);
+            updateStatusBox('error', 'Kameradan foydalanish ruxsati yo\'q', 'Pastdagi tugmani bosing yoki 4 xonali PIN kod orqali kiring');
         }
     }
 

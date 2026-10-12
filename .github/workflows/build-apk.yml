@@ -46,7 +46,7 @@ jobs:
         run: |
           mkdir -p www
           cp index.html style.css app.js data.js icon-192.svg icon-512.svg icon-192.png icon-512.png icon.png manifest.json sw.js www/
-          npm install @capacitor/core@^6.2.0 @capacitor/cli@^6.2.0 @capacitor/android@^6.2.0 @capacitor/assets@latest
+          npm install @capacitor/core@^6.2.0 @capacitor/cli@^6.2.0 @capacitor/android@^6.2.0 @capacitor/camera@^6.0.0 @capacitor/assets@latest
           npx cap init "MedLatin" "uz.dilmurod.medlatin" --web-dir "www"
           npx cap add android
           npx cap sync android
@@ -82,25 +82,24 @@ jobs:
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.6.0
-          name: "MedLatin v1.6.0 (Face ID & 4 Xonali PIN Kod Himoyasi, Yangi APK)"
+          tag_name: v1.6.1
+          name: "MedLatin v1.6.1 (Kamera Ruxsatlari va Face ID To'liq Tuzatilgan APK)"
           draft: false
           prerelease: false
           make_latest: true
           body: |
-            ## 📱 MedLatin v1.6.0 — Biometrik Face ID va PIN Himoyali Rasmiy Android APK
+            ## 📱 MedLatin v1.6.1 — Kamera Ruxsatlari & Face ID To'liq Tuzatilgan Rasmiy APK
 
-            ✨ **Ushbu versiyadagi yangiliklar:**
-            - 🔐 **Biometrik Face ID Himoyasi:** Shifokor yuzini 1 marta skanerlab eslab qolish va keyingi kirishlarda begona yuzlarni rad etib, faqat shifokor yuzini tanish tizimi.
-            - 🔢 **4 Xonali PIN Kod Tizimi:** iOS/Android uslubidagi 0-9 raqamli klaviatura orqali tezkor kirish va maxfiy PIN kodni o'zgartirish imkoniyati.
-            - 🛡️ **Xavfsizlik Sozlamalari Modali:** Dasturni bir bosishda qulflash, yuzni qayta skanerlash va 4 xonali kodni boshqarish.
-            - 🩺 **Yangi Tibbiy EKG Kirish Animatsiyasi:** Kardiogramma to'lqini va 60fps silliq yuklanish.
-            - 💊 **200+ Klinik Tashxislar va Retseptlar Dekoderi:** To'liq oflayn (internetsiz) ishlaydi.
+            ✨ **Ushbu relizdagi muhim tuzatishlar:**
+            - 📷 **Android Kamera Ruxsati Tuzatildi:** AndroidManifest.xml fayliga `CAMERA` va audio apparat ruxsatlari to'liq kiritildi, ilovaga kirganda avtomatik ruxsat so'rovi chiqadi.
+            - 🔐 **Biometrik Face ID Muammosi Hal Qilindi:** "Kameradan foydalanish ruxsati yo'q" xatoligi bartaraf etildi, qayta urinish tugmasi va yordam ko'rsatmasi qo'shildi.
+            - 🔢 **4 Xonali PIN Kod:** Muqobil kirish usuli sifatida zaxirada to'liq ishlaydi.
+            - ⚡ **Tezkor yuklanish va optimallashtirilgan ishlash.**
 
             ### 📥 O'rnatish yo'riqnomasi:
             1. Quyidagi **MedLatin.apk** faylini yuklab oling.
             2. Telefoningizda ochib, **"O'rnatish" (Установить)** tugmasini bosing.
-            3. Agar telefoningiz xavfsizlik ruxsati so'rasa, *"Noma'lum manbalardan o'rnatishga ruxsat berish"* bandini yoqing.
+            3. Dastur birinchi marta ochilganda kameradan foydalanish so'rovi chiqsa, **"Foydalanish vaqtida ruxsat berish" (При использовании приложения)** bandini tanlang.
           files: release-output/MedLatin.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
